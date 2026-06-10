@@ -5,18 +5,89 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Estudiantes">
 
-    <VerticalStackLayout Padding="30" Spacing="16">
-        <Label
-            Text="Listado de estudiantes"
-            FontSize="28"
-            FontAttributes="Bold" />
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="16">
 
-        <Label
-            Text="Aquí se mostrará la lista de estudiantes registrados desde la API."
-            FontSize="16" />
+            <Label
+                Text="Listado de estudiantes"
+                FontSize="28"
+                FontAttributes="Bold" />
 
-        <Button
-            Text="Nuevo estudiante"
-            Clicked="OnCreateStudentClicked" />
-    </VerticalStackLayout>
+            <Label
+                Text="Estudiantes cargados desde la API del proyecto."
+                FontSize="16" />
+
+            <Button
+                Text="Nuevo estudiante"
+                Clicked="OnCreateStudentClicked" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+            <Label
+                x:Name="StatusLabel"
+                Text="Presiona actualizar para cargar estudiantes."
+                FontSize="14" />
+
+            <Button
+                Text="Actualizar listado"
+                Clicked="OnRefreshClicked" />
+
+            <CollectionView
+                x:Name="StudentsCollectionView"
+                EmptyView="No hay estudiantes para mostrar. Verifica que la API esté ejecutándose.">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Stroke="#D9D9D9"
+                            StrokeThickness="1"
+                            Padding="14"
+                            Margin="0,0,0,12">
+
+                            <VerticalStackLayout Spacing="4">
+
+                                <HorizontalStackLayout Spacing="4">
+                                    <Label
+                                        Text="{Binding FirstName}"
+                                        FontSize="18"
+                                        FontAttributes="Bold" />
+
+                                    <Label
+                                        Text="{Binding LastName}"
+                                        FontSize="18"
+                                        FontAttributes="Bold" />
+                                </HorizontalStackLayout>
+
+                                <Label
+                                    Text="{Binding StudentCode}"
+                                    FontSize="14" />
+
+                                <Label
+                                    Text="{Binding Career}"
+                                    FontSize="14" />
+
+                                <Label
+                                    Text="{Binding Email}"
+                                    FontSize="14" />
+
+                                <Label
+                                    Text="{Binding Phone}"
+                                    FontSize="14" />
+
+                                <Label
+                                    Text="{Binding Status}"
+                                    FontSize="14"
+                                    FontAttributes="Bold" />
+
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
