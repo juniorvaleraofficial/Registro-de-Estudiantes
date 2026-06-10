@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.StudentsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Estudiantes">
+
+    <VerticalStackLayout Padding="30" Spacing="16">
+        <Label
+            Text="Listado de estudiantes"
+            FontSize="28"
+            FontAttributes="Bold" />
+
+        <Label
+            Text="Aquí se mostrará la lista de estudiantes registrados desde la API."
+            FontSize="16" />
+
+        <Button
+            Text="Nuevo estudiante"
+            Clicked="OnCreateStudentClicked" />
+    </VerticalStackLayout>
+</ContentPage>

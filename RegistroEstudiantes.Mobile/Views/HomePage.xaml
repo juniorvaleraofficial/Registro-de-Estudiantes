@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Principal">
+
+    <VerticalStackLayout Padding="30" Spacing="16">
+        <Label
+            Text="Panel principal"
+            FontSize="28"
+            FontAttributes="Bold" />
+
+        <Label
+            Text="Sistema móvil para registro de estudiantes."
+            FontSize="16" />
+
+        <Button
+            Text="Ver estudiantes"
+            Clicked="OnStudentsClicked" />
+
+        <Button
+            Text="Registrar estudiante"
+            Clicked="OnCreateStudentClicked" />
+    </VerticalStackLayout>
+</ContentPage>
