@@ -7,12 +7,12 @@ public partial class HomePage : ContentPage
         InitializeComponent();
     }
 
-    private async void OnStudentsClicked(object sender, EventArgs e)
+    private async void OnStudentsClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("//students");
     }
 
-    private async void OnCreateStudentClicked(object sender, EventArgs e)
+    private async void OnCreateStudentClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("//student-form");
     }

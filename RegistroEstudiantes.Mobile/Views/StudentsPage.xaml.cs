@@ -7,7 +7,7 @@ public partial class StudentsPage : ContentPage
         InitializeComponent();
     }
 
-    private async void OnCreateStudentClicked(object sender, EventArgs e)
+    private async void OnCreateStudentClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("//student-form");
     }
