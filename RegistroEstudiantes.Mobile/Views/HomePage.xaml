@@ -3,24 +3,61 @@
     x:Class="RegistroEstudiantes.Mobile.Views.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F4F6F8"
     Title="Principal">
 
-    <VerticalStackLayout Padding="30" Spacing="16">
-        <Label
-            Text="Panel principal"
-            FontSize="28"
-            FontAttributes="Bold" />
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
 
-        <Label
-            Text="Sistema m�vil para registro de estudiantes."
-            FontSize="16" />
+            <Label
+                Text="Panel principal"
+                FontSize="30"
+                FontAttributes="Bold"
+                TextColor="#111827" />
 
-        <Button
-            Text="Ver estudiantes"
-            Clicked="OnStudentsClicked" />
+            <Label
+                Text="Sistema móvil para registro y consulta de estudiantes."
+                FontSize="16"
+                TextColor="#6B7280" />
 
-        <Button
-            Text="Registrar estudiante"
-            Clicked="OnCreateStudentClicked" />
-    </VerticalStackLayout>
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="Resumen del proyecto"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#111827" />
+
+                    <Label
+                        Text="La aplicación móvil consume una API backend para consultar estudiantes, evitando que la app cargue directamente con la base de datos."
+                        FontSize="15"
+                        TextColor="#4B5563" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button
+                Text="Ver estudiantes"
+                BackgroundColor="#4F46E5"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="10"
+                HeightRequest="50"
+                Clicked="OnStudentsClicked" />
+
+            <Button
+                Text="Registrar estudiante"
+                BackgroundColor="#111827"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="10"
+                HeightRequest="50"
+                Clicked="OnCreateStudentClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

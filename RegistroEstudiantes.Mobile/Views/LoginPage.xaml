@@ -3,26 +3,57 @@
     x:Class="RegistroEstudiantes.Mobile.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F4F6F8"
     Title="Login">
 
-    <VerticalStackLayout Padding="30" Spacing="16" VerticalOptions="Center">
-        <Label
-            Text="Registro de Estudiantes"
-            FontSize="28"
-            FontAttributes="Bold"
-            HorizontalOptions="Center" />
+    <Grid Padding="24">
+        <Border
+            BackgroundColor="White"
+            Stroke="#E5E7EB"
+            StrokeThickness="1"
+            Padding="28"
+            VerticalOptions="Center">
 
-        <Label
-            Text="Inicio de sesión"
-            FontSize="18"
-            HorizontalOptions="Center" />
+            <VerticalStackLayout Spacing="18">
 
-        <Entry Placeholder="Usuario o correo" />
+                <Label
+                    Text="Registro de Estudiantes"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    TextColor="#111827"
+                    HorizontalOptions="Center" />
 
-        <Entry Placeholder="Contraseña" IsPassword="True" />
+                <Label
+                    Text="Acceso al sistema acadÃ©mico"
+                    FontSize="16"
+                    TextColor="#6B7280"
+                    HorizontalOptions="Center" />
 
-        <Button
-            Text="Entrar"
-            Clicked="OnLoginClicked" />
-    </VerticalStackLayout>
+                <Entry
+                    Placeholder="Usuario o correo"
+                    BackgroundColor="#F9FAFB" />
+
+                <Entry
+                    Placeholder="ContraseÃ±a"
+                    IsPassword="True"
+                    BackgroundColor="#F9FAFB" />
+
+                <Button
+                    Text="Entrar"
+                    BackgroundColor="#4F46E5"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Clicked="OnLoginClicked" />
+
+                <Label
+                    Text="Proyecto acadÃ©mico - Unidad 2"
+                    FontSize="13"
+                    TextColor="#9CA3AF"
+                    HorizontalOptions="Center" />
+
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
 </ContentPage>
