@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.StudentFormPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F4F6F8"
+    Title="Formulario">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
+
+            <Label
+                Text="Formulario de estudiante"
+                FontSize="30"
+                FontAttributes="Bold"
+                TextColor="#111827" />
+
+            <Label
+                Text="Pantalla visual para registrar o editar la información básica de un estudiante."
+                FontSize="16"
+                TextColor="#6B7280" />
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Entry Placeholder="Nombre" BackgroundColor="#F9FAFB" />
+                    <Entry Placeholder="Apellido" BackgroundColor="#F9FAFB" />
+                    <Entry Placeholder="Matrícula" BackgroundColor="#F9FAFB" />
+                    <Entry Placeholder="Correo electrónico" Keyboard="Email" BackgroundColor="#F9FAFB" />
+                    <Entry Placeholder="Teléfono" Keyboard="Telephone" BackgroundColor="#F9FAFB" />
+                    <Entry Placeholder="Carrera" BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="Fecha de nacimiento"
+                        FontSize="14"
+                        TextColor="#4B5563" />
+
+                    <DatePicker BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="Estado"
+                        FontSize="14"
+                        TextColor="#4B5563" />
+
+                    <Picker Title="Seleccione estado" BackgroundColor="#F9FAFB">
+                        <Picker.Items>
+                            <x:String>Activo</x:String>
+                            <x:String>Inactivo</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <Button
+                        Text="Guardar estudiante"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50" />
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
