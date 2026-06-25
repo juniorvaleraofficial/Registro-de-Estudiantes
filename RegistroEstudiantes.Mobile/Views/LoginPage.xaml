@@ -17,26 +17,38 @@
             <VerticalStackLayout Spacing="18">
 
                 <Label
-                    Text="Registro de Estudiantes"
-                    FontSize="30"
+                    Text="Control Académico Estudiantil"
+                    FontSize="28"
                     FontAttributes="Bold"
                     TextColor="#111827"
-                    HorizontalOptions="Center" />
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center" />
 
                 <Label
                     Text="Acceso al sistema académico"
                     FontSize="16"
                     TextColor="#6B7280"
-                    HorizontalOptions="Center" />
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center" />
 
                 <Entry
-                    Placeholder="Usuario o correo"
-                    BackgroundColor="#F9FAFB" />
+                    x:Name="UsuarioEntry"
+                    Placeholder="Usuario"
+                    BackgroundColor="#F9FAFB"
+                    Keyboard="Text" />
 
                 <Entry
+                    x:Name="ContrasenaEntry"
                     Placeholder="Contraseña"
                     IsPassword="True"
                     BackgroundColor="#F9FAFB" />
+
+                <Label
+                    x:Name="MensajeErrorLabel"
+                    Text=""
+                    FontSize="13"
+                    TextColor="#DC2626"
+                    IsVisible="False" />
 
                 <Button
                     Text="Entrar"
@@ -48,7 +60,14 @@
                     Clicked="OnLoginClicked" />
 
                 <Label
-                    Text="Proyecto académico - Unidad 2"
+                    Text="Usuario de prueba: admin   |   Clave: 1234"
+                    FontSize="13"
+                    TextColor="#6B7280"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center" />
+
+                <Label
+                    Text="Proyecto académico - Unidad 3"
                     FontSize="13"
                     TextColor="#9CA3AF"
                     HorizontalOptions="Center" />
