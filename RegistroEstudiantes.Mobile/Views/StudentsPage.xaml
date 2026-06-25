@@ -7,54 +7,96 @@
     Title="Estudiantes">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
+        <VerticalStackLayout Padding="24" Spacing="18">
 
             <Label
-                Text="Listado de estudiantes"
+                Text="Estudiantes"
                 FontSize="30"
                 FontAttributes="Bold"
                 TextColor="#111827" />
 
             <Label
-                Text="Estudiantes cargados desde la API del proyecto."
+                Text="Registra estudiantes y consulta los datos guardados temporalmente en memoria."
                 FontSize="16"
                 TextColor="#6B7280" />
 
-            <HorizontalStackLayout Spacing="12">
-                <Button
-                    Text="Actualizar listado"
-                    BackgroundColor="#4F46E5"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="10"
-                    HeightRequest="48"
-                    Clicked="OnRefreshClicked" />
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                Padding="20">
 
-                <Button
-                    Text="Nuevo estudiante"
-                    BackgroundColor="#111827"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="10"
-                    HeightRequest="48"
-                    Clicked="OnCreateStudentClicked" />
-            </HorizontalStackLayout>
+                <VerticalStackLayout Spacing="12">
 
-            <ActivityIndicator
-                x:Name="LoadingIndicator"
-                IsVisible="False"
-                IsRunning="False"
-                Color="#4F46E5" />
+                    <Label
+                        Text="Nuevo estudiante"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#111827" />
+
+                    <Entry
+                        x:Name="MatriculaEntry"
+                        Placeholder="Matrícula"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="NombreEntry"
+                        Placeholder="Nombre"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="ApellidoEntry"
+                        Placeholder="Apellido"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="CarreraEntry"
+                        Placeholder="Carrera"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="TelefonoEntry"
+                        Placeholder="Teléfono"
+                        Keyboard="Telephone"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        x:Name="MensajeLabel"
+                        Text=""
+                        FontSize="14"
+                        TextColor="#DC2626"
+                        IsVisible="False" />
+
+                    <Button
+                        Text="Guardar estudiante"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        Clicked="OnGuardarEstudianteClicked" />
+
+                    <Button
+                        Text="Limpiar formulario"
+                        BackgroundColor="#111827"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="48"
+                        Clicked="OnLimpiarFormularioClicked" />
+
+                </VerticalStackLayout>
+            </Border>
 
             <Label
-                x:Name="StatusLabel"
-                Text="Presiona actualizar para cargar estudiantes."
-                FontSize="14"
-                TextColor="#6B7280" />
+                Text="Listado de estudiantes"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="#111827" />
 
             <CollectionView
-                x:Name="StudentsCollectionView"
-                EmptyView="No hay estudiantes para mostrar. Verifica que la API esté ejecutándose.">
+                x:Name="EstudiantesCollectionView"
+                EmptyView="No hay estudiantes registrados todavía.">
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -67,46 +109,27 @@
 
                             <VerticalStackLayout Spacing="6">
 
-                                <HorizontalStackLayout Spacing="5">
-                                    <Label
-                                        Text="{Binding FirstName}"
-                                        FontSize="20"
-                                        FontAttributes="Bold"
-                                        TextColor="#111827" />
-
-                                    <Label
-                                        Text="{Binding LastName}"
-                                        FontSize="20"
-                                        FontAttributes="Bold"
-                                        TextColor="#111827" />
-                                </HorizontalStackLayout>
+                                <Label
+                                    Text="{Binding NombreCompleto}"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#111827" />
 
                                 <Label
-                                    Text="{Binding StudentCode}"
+                                    Text="{Binding Matricula}"
                                     FontSize="14"
                                     TextColor="#4F46E5"
                                     FontAttributes="Bold" />
 
                                 <Label
-                                    Text="{Binding Career}"
+                                    Text="{Binding Carrera}"
                                     FontSize="14"
                                     TextColor="#4B5563" />
 
                                 <Label
-                                    Text="{Binding Email}"
+                                    Text="{Binding Telefono}"
                                     FontSize="14"
                                     TextColor="#4B5563" />
-
-                                <Label
-                                    Text="{Binding Phone}"
-                                    FontSize="14"
-                                    TextColor="#4B5563" />
-
-                                <Label
-                                    Text="{Binding Status}"
-                                    FontSize="14"
-                                    TextColor="#059669"
-                                    FontAttributes="Bold" />
 
                             </VerticalStackLayout>
                         </Border>

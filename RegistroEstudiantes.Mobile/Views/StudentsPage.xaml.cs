@@ -1,50 +1,108 @@
+using RegistroEstudiantes.Mobile.Models;
 using RegistroEstudiantes.Mobile.Services;
 
 namespace RegistroEstudiantes.Mobile.Views;
 
 public partial class StudentsPage : ContentPage
 {
-    private readonly StudentApiService _studentApiService;
-
     public StudentsPage()
     {
         InitializeComponent();
-
-        _studentApiService = new StudentApiService();
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        await LoadStudentsAsync();
+        ServicioAcademico.CargarDatosDePrueba();
+        CargarEstudiantes();
+        LimpiarMensaje();
     }
 
-    private async Task LoadStudentsAsync()
+    private async void OnGuardarEstudianteClicked(object? sender, EventArgs e)
     {
-        LoadingIndicator.IsVisible = true;
-        LoadingIndicator.IsRunning = true;
-        StatusLabel.Text = "Cargando estudiantes desde la API...";
+        string matricula = MatriculaEntry.Text?.Trim() ?? string.Empty;
+        string nombre = NombreEntry.Text?.Trim() ?? string.Empty;
+        string apellido = ApellidoEntry.Text?.Trim() ?? string.Empty;
+        string carrera = CarreraEntry.Text?.Trim() ?? string.Empty;
+        string telefono = TelefonoEntry.Text?.Trim() ?? string.Empty;
 
-        var students = await _studentApiService.GetStudentsAsync();
+        if (string.IsNullOrWhiteSpace(matricula))
+        {
+            MostrarMensaje("La matrícula es obligatoria.");
+            return;
+        }
 
-        StudentsCollectionView.ItemsSource = students;
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            MostrarMensaje("El nombre es obligatorio.");
+            return;
+        }
 
-        StatusLabel.Text = students.Count == 0
-            ? "No se encontraron estudiantes o la API no está disponible."
-            : $"Estudiantes cargados: {students.Count}";
+        if (string.IsNullOrWhiteSpace(apellido))
+        {
+            MostrarMensaje("El apellido es obligatorio.");
+            return;
+        }
 
-        LoadingIndicator.IsRunning = false;
-        LoadingIndicator.IsVisible = false;
+        if (string.IsNullOrWhiteSpace(carrera))
+        {
+            MostrarMensaje("La carrera es obligatoria.");
+            return;
+        }
+
+        var estudiante = new Estudiante
+        {
+            Matricula = matricula,
+            Nombre = nombre,
+            Apellido = apellido,
+            Carrera = carrera,
+            Telefono = telefono
+        };
+
+        ServicioAcademico.AgregarEstudiante(estudiante);
+
+        LimpiarFormulario();
+        CargarEstudiantes();
+        LimpiarMensaje();
+
+        await DisplayAlertAsync(
+            "Estudiante guardado",
+            "El estudiante fue registrado correctamente en memoria.",
+            "Aceptar");
     }
 
-    private async void OnRefreshClicked(object? sender, EventArgs e)
+    private void OnLimpiarFormularioClicked(object? sender, EventArgs e)
     {
-        await LoadStudentsAsync();
+        LimpiarFormulario();
+        LimpiarMensaje();
     }
 
-    private async void OnCreateStudentClicked(object? sender, EventArgs e)
+    private void CargarEstudiantes()
     {
-        await Shell.Current.GoToAsync("//student-form");
+        EstudiantesCollectionView.ItemsSource = null;
+        EstudiantesCollectionView.ItemsSource = ServicioAcademico.ObtenerEstudiantes().ToList();
+    }
+
+    private void LimpiarFormulario()
+    {
+        MatriculaEntry.Text = string.Empty;
+        NombreEntry.Text = string.Empty;
+        ApellidoEntry.Text = string.Empty;
+        CarreraEntry.Text = string.Empty;
+        TelefonoEntry.Text = string.Empty;
+    }
+
+    private void MostrarMensaje(string mensaje)
+    {
+        MensajeLabel.Text = mensaje;
+        MensajeLabel.TextColor = Color.FromArgb("#DC2626");
+        MensajeLabel.IsVisible = true;
+    }
+
+    private void LimpiarMensaje()
+    {
+        MensajeLabel.Text = string.Empty;
+        MensajeLabel.IsVisible = false;
     }
 }
