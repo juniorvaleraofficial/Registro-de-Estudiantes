@@ -7,13 +7,23 @@ public partial class HomePage : ContentPage
         InitializeComponent();
     }
 
-    private async void OnStudentsClicked(object? sender, EventArgs e)
+    private async void OnEstudiantesClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("//students");
     }
 
-    private async void OnCreateStudentClicked(object? sender, EventArgs e)
+    private async void OnMateriasClicked(object? sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//student-form");
+        await Shell.Current.GoToAsync("//materias");
+    }
+
+    private async void OnAsistenciasClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//asistencias");
+    }
+
+    private async void OnCalificacionesClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//calificaciones");
     }
 }

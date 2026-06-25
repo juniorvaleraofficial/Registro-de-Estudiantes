@@ -4,26 +4,52 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:RegistroEstudiantes.Mobile.Views"
-    Title="Registro de Estudiantes">
+    Title="Control Académico"
+    FlyoutBehavior="Disabled">
 
-	<ShellContent
+    <ShellContent
         Title="Login"
         Route="login"
+        Shell.FlyoutItemIsVisible="False"
         ContentTemplate="{DataTemplate views:LoginPage}" />
 
-	<ShellContent
-        Title="Principal"
-        Route="home"
-        ContentTemplate="{DataTemplate views:HomePage}" />
+    <FlyoutItem Title="Inicio" Route="inicio">
+        <ShellContent
+            Title="Inicio"
+            Route="home"
+            ContentTemplate="{DataTemplate views:HomePage}" />
+    </FlyoutItem>
 
-	<ShellContent
-        Title="Estudiantes"
-        Route="students"
-        ContentTemplate="{DataTemplate views:StudentsPage}" />
+    <FlyoutItem Title="Estudiantes" Route="menu-estudiantes">
+        <ShellContent
+            Title="Estudiantes"
+            Route="students"
+            ContentTemplate="{DataTemplate views:StudentsPage}" />
+    </FlyoutItem>
 
-	<ShellContent
-        Title="Formulario"
-        Route="student-form"
-        ContentTemplate="{DataTemplate views:StudentFormPage}" />
+    <FlyoutItem Title="Materias" Route="menu-materias">
+        <ShellContent
+            Title="Materias"
+            Route="materias"
+            ContentTemplate="{DataTemplate views:MateriasPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Asistencias" Route="menu-asistencias">
+        <ShellContent
+            Title="Asistencias"
+            Route="asistencias"
+            ContentTemplate="{DataTemplate views:AsistenciasPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Calificaciones" Route="menu-calificaciones">
+        <ShellContent
+            Title="Calificaciones"
+            Route="calificaciones"
+            ContentTemplate="{DataTemplate views:CalificacionesPage}" />
+    </FlyoutItem>
+
+    <MenuItem
+        Text="Cerrar sesión"
+        Clicked="OnCerrarSesionClicked" />
 
 </Shell>

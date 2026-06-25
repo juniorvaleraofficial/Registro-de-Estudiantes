@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="#F4F6F8"
-    Title="Principal">
+    Title="Inicio">
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="18">
@@ -16,7 +16,7 @@
                 TextColor="#111827" />
 
             <Label
-                Text="Sistema móvil para registro y consulta de estudiantes."
+                Text="Sistema móvil para control académico básico."
                 FontSize="16"
                 TextColor="#6B7280" />
 
@@ -28,35 +28,53 @@
 
                 <VerticalStackLayout Spacing="10">
                     <Label
-                        Text="Resumen del proyecto"
+                        Text="Unidad 3"
                         FontSize="20"
                         FontAttributes="Bold"
                         TextColor="#111827" />
 
                     <Label
-                        Text="La aplicación móvil consume una API backend para consultar estudiantes, evitando que la app cargue directamente con la base de datos."
+                        Text="Esta aplicación permite registrar estudiantes, materias, asistencias y calificaciones usando datos temporales en memoria."
                         FontSize="15"
                         TextColor="#4B5563" />
                 </VerticalStackLayout>
             </Border>
 
             <Button
-                Text="Ver estudiantes"
+                Text="Estudiantes"
                 BackgroundColor="#4F46E5"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="10"
                 HeightRequest="50"
-                Clicked="OnStudentsClicked" />
+                Clicked="OnEstudiantesClicked" />
 
             <Button
-                Text="Registrar estudiante"
+                Text="Materias"
                 BackgroundColor="#111827"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="10"
                 HeightRequest="50"
-                Clicked="OnCreateStudentClicked" />
+                Clicked="OnMateriasClicked" />
+
+            <Button
+                Text="Asistencias"
+                BackgroundColor="#111827"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="10"
+                HeightRequest="50"
+                Clicked="OnAsistenciasClicked" />
+
+            <Button
+                Text="Calificaciones"
+                BackgroundColor="#111827"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="10"
+                HeightRequest="50"
+                Clicked="OnCalificacionesClicked" />
 
         </VerticalStackLayout>
     </ScrollView>
