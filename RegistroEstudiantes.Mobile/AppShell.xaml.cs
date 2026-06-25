@@ -19,11 +19,11 @@ public partial class AppShell : Shell
 
     private async void OnCerrarSesionClicked(object? sender, EventArgs e)
     {
-        bool confirmar = await DisplayAlert(
-            "Cerrar sesión",
-            "¿Deseas salir del sistema?",
-            "Sí",
-            "No");
+        bool confirmar = await DisplayAlertAsync(
+                "Cerrar sesión",
+                "¿Deseas salir del sistema?",
+                "Sí",
+                "No");
 
         if (!confirmar)
         {
