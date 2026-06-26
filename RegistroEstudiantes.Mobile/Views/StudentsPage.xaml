@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.StudentsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F4F6F8"
+    Title="Estudiantes">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
+
+            <Label
+                Text="Estudiantes"
+                FontSize="30"
+                FontAttributes="Bold"
+                TextColor="#111827" />
+
+            <Label
+                Text="Registra estudiantes y consulta los datos guardados temporalmente en memoria."
+                FontSize="16"
+                TextColor="#6B7280" />
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="Nuevo estudiante"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#111827" />
+
+                    <Entry
+                        x:Name="MatriculaEntry"
+                        Placeholder="Matrícula"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="NombreEntry"
+                        Placeholder="Nombre"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="ApellidoEntry"
+                        Placeholder="Apellido"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="CarreraEntry"
+                        Placeholder="Carrera"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Entry
+                        x:Name="TelefonoEntry"
+                        Placeholder="Teléfono"
+                        Keyboard="Telephone"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        x:Name="MensajeLabel"
+                        Text=""
+                        FontSize="14"
+                        TextColor="#DC2626"
+                        IsVisible="False" />
+
+                    <Button
+                        Text="Guardar estudiante"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        Clicked="OnGuardarEstudianteClicked" />
+
+                    <Button
+                        Text="Limpiar formulario"
+                        BackgroundColor="#111827"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="48"
+                        Clicked="OnLimpiarFormularioClicked" />
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                Text="Listado de estudiantes"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="#111827" />
+
+            <CollectionView
+                x:Name="EstudiantesCollectionView"
+                EmptyView="No hay estudiantes registrados todavía.">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            BackgroundColor="White"
+                            Stroke="#E5E7EB"
+                            StrokeThickness="1"
+                            Padding="16"
+                            Margin="0,0,0,12">
+
+                            <VerticalStackLayout Spacing="6">
+
+                                <Label
+                                    Text="{Binding NombreCompleto}"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#111827" />
+
+                                <Label
+                                    Text="{Binding Matricula}"
+                                    FontSize="14"
+                                    TextColor="#4F46E5"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    Text="{Binding Carrera}"
+                                    FontSize="14"
+                                    TextColor="#4B5563" />
+
+                                <Label
+                                    Text="{Binding Telefono}"
+                                    FontSize="14"
+                                    TextColor="#4B5563" />
+
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

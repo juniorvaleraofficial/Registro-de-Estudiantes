@@ -1,88 +1,189 @@
-\# Registro de Estudiantes
+# Control Académico Estudiantil
 
+Proyecto académico para la asignatura **INF-4316 - Programación de Aplicaciones Móviles**.
 
+Este repositorio corresponde al proyecto móvil del **Grupo #6** y se trabaja por unidades mediante ramas de Git.
 
-Proyecto académico para la asignatura Programación de Aplicaciones Móviles.
+## Integrantes
 
+- Junior Valera
+- Yisel Santana
 
+## Rama actual
 
-\## Integrantes
+```txt
+unidad-3
+```
 
+La rama `unidad-3` corresponde a la **Actividad 3 - Login, navegación y CRUD básico**.
 
+## Objetivo de la Unidad 3
 
-\- Junior Valera
+Desarrollar una aplicación móvil útil y realista para el control académico básico, usando **.NET MAUI** y almacenamiento temporal en memoria.
 
-\- Yisel Santana
+La app estará orientada a un profesor, coordinador o encargado académico que necesite registrar y consultar información básica de estudiantes, materias, asistencias y calificaciones desde el celular.
 
+## Descripción de la aplicación
 
+**Control Académico Estudiantil** será una aplicación móvil con inicio de sesión, menú lateral y cuatro secciones principales:
 
-\## Descripción del proyecto
+1. Estudiantes
+2. Materias
+3. Asistencias
+4. Calificaciones
 
+La aplicación no usará base de datos en esta unidad. Los datos se guardarán temporalmente en memoria mientras la app esté en ejecución, de acuerdo con el enunciado de la actividad.
 
+## Funcionalidades principales
 
-Esta aplicación tiene como objetivo representar visualmente un sistema móvil para el registro de estudiantes.
+- Login funcional con credenciales fijas.
+- Validación de usuario y contraseña.
+- Navegación entre pantallas después del login.
+- Menú lateral visible solo después de iniciar sesión.
+- Opción para cerrar sesión.
+- Formularios de creación con validación mínima.
+- Listados de registros creados.
+- Servicio en memoria para almacenar los datos temporalmente.
 
+## Credenciales de prueba
 
+```txt
+Usuario: admin
+Contraseña: 1234
+```
 
-En esta unidad se trabajará principalmente la estructura visual de la aplicación usando .NET MAUI, cumpliendo con las pantallas solicitadas por el docente:
+## Entidades del proyecto
 
+Para cumplir con los criterios de la Unidad 3, la aplicación manejará cuatro entidades principales:
 
+### Estudiante
 
-1\. Login
+Representa a un estudiante registrado en el sistema.
 
-2\. Pantalla principal
+Campos propuestos:
 
-3\. Listado de estudiantes
+- Matrícula
+- Nombre
+- Apellido
+- Carrera
+- Teléfono
 
-4\. Formulario de creación/edición de estudiante
+### Materia
 
+Representa una asignatura o materia académica.
 
+Campos propuestos:
 
-Como valor agregado, el proyecto incluirá una API backend en ASP.NET Core para preparar la aplicación hacia una arquitectura más completa.
+- Código
+- Nombre
+- Profesor
+- Créditos
 
+### Asistencia
 
+Representa el registro de asistencia de un estudiante en una materia.
 
-\## Entidad principal
+Campos propuestos:
 
+- Estudiante
+- Materia
+- Fecha
+- Estado
 
+Estados sugeridos:
 
-La entidad principal del proyecto es Estudiante.
+- Presente
+- Ausente
+- Excusa
 
+### Calificación
 
+Representa una nota asignada a un estudiante en una materia.
 
-Campos principales:
+Campos propuestos:
 
+- Estudiante
+- Materia
+- Nota
+- Observación
 
+## Pantallas previstas
 
-\- Id
+### Login
 
-\- Nombre
+Pantalla inicial donde el usuario ingresa sus credenciales.
 
-\- Apellido
+### Inicio
 
-\- Matrícula
+Pantalla principal después del login, con resumen breve del sistema.
 
-\- Correo
+### Estudiantes
 
-\- Teléfono
+Formulario para crear estudiantes y listado de estudiantes registrados.
 
-\- Carrera
+### Materias
 
-\- Fecha de nacimiento
+Formulario para crear materias y listado de materias registradas.
 
-\- Estado
+### Asistencias
 
+Formulario para registrar asistencia y listado de asistencias creadas.
 
+### Calificaciones
 
-\## Tecnologías previstas
+Formulario para registrar calificaciones y listado de notas creadas.
 
+## Servicio en memoria
 
+La aplicación usará un servicio en memoria para manejar los registros durante la ejecución de la app.
 
-\- .NET MAUI
+Nombre sugerido:
 
-\- C#
+```txt
+ServicioAcademico
+```
 
-\- ASP.NET Core Web API
+Este servicio administrará listas temporales para:
 
-\- Git y GitHub
+- Estudiantes
+- Materias
+- Asistencias
+- Calificaciones
 
+## Tecnologías
+
+- .NET MAUI
+- C#
+- XAML
+- Git
+- GitHub
+
+## Organización del repositorio
+
+```txt
+Registro-de-Estudiantes/
+├── RegistroEstudiantes.Mobile/
+├── RegistroEstudiantes.Api/
+├── docs/
+│   └── unidad-3.md
+└── README.md
+```
+
+> Nota: Para esta unidad, el foco principal estará en la aplicación móvil. El backend creado en unidades anteriores puede permanecer en el repositorio, pero la Actividad 3 trabajará los datos en memoria, sin base de datos.
+
+## Criterios de aceptación de la Unidad 3
+
+- Implementar login funcional con credenciales fijas.
+- Implementar navegación funcional entre las pantallas.
+- Configurar el menú lateral para que solo aparezca después del login.
+- Agregar la opción **Cerrar sesión**.
+- Crear al menos cuatro entidades base.
+- Crear un servicio en memoria para almacenar los registros.
+- Implementar formularios de creación con validación mínima.
+- Implementar listados que muestren los registros creados.
+
+## Estado actual
+
+Documentación inicial de la Unidad 3 creada en la rama `unidad-3`.
+
+Próximo paso: implementar la estructura de login, navegación, modelos, servicio en memoria, formularios y listados dentro del proyecto móvil.
