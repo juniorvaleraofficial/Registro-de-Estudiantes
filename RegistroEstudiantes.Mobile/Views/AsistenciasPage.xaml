@@ -16,7 +16,7 @@
                 TextColor="#111827" />
 
             <Label
-                Text="Aquí se registrará la asistencia de los estudiantes por materia."
+                Text="Registra la asistencia de los estudiantes por materia."
                 FontSize="16"
                 TextColor="#6B7280" />
 
@@ -26,19 +26,109 @@
                 StrokeThickness="1"
                 Padding="20">
 
-                <VerticalStackLayout Spacing="10">
+                <VerticalStackLayout Spacing="12">
+
                     <Label
-                        Text="Módulo en preparación"
+                        Text="Nueva asistencia"
                         FontSize="20"
                         FontAttributes="Bold"
                         TextColor="#111827" />
 
+                    <Picker
+                        x:Name="EstudiantePicker"
+                        Title="Selecciona un estudiante"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Picker
+                        x:Name="MateriaPicker"
+                        Title="Selecciona una materia"
+                        BackgroundColor="#F9FAFB" />
+
+                    <DatePicker
+                        x:Name="FechaDatePicker"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Picker
+                        x:Name="EstadoPicker"
+                        Title="Estado de asistencia"
+                        BackgroundColor="#F9FAFB" />
+
                     <Label
-                        Text="En el siguiente bloque agregaremos el formulario y el listado de asistencias."
-                        FontSize="15"
-                        TextColor="#4B5563" />
+                        x:Name="MensajeLabel"
+                        Text=""
+                        FontSize="14"
+                        TextColor="#DC2626"
+                        IsVisible="False" />
+
+                    <Button
+                        Text="Guardar asistencia"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        Clicked="OnGuardarAsistenciaClicked" />
+
+                    <Button
+                        Text="Limpiar formulario"
+                        BackgroundColor="#111827"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="48"
+                        Clicked="OnLimpiarFormularioClicked" />
+
                 </VerticalStackLayout>
             </Border>
+
+            <Label
+                Text="Listado de asistencias"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="#111827" />
+
+            <CollectionView
+                x:Name="AsistenciasCollectionView"
+                EmptyView="No hay asistencias registradas todavía.">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            BackgroundColor="White"
+                            Stroke="#E5E7EB"
+                            StrokeThickness="1"
+                            Padding="16"
+                            Margin="0,0,0,12">
+
+                            <VerticalStackLayout Spacing="6">
+
+                                <Label
+                                    Text="{Binding Estudiante}"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#111827" />
+
+                                <Label
+                                    Text="{Binding Materia}"
+                                    FontSize="14"
+                                    TextColor="#4B5563" />
+
+                                <Label
+                                    Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
+                                    FontSize="14"
+                                    TextColor="#4B5563" />
+
+                                <Label
+                                    Text="{Binding Estado}"
+                                    FontSize="14"
+                                    TextColor="#4F46E5"
+                                    FontAttributes="Bold" />
+
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
         </VerticalStackLayout>
     </ScrollView>
