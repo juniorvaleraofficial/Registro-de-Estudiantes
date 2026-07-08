@@ -26,7 +26,7 @@
                 StrokeThickness="1"
                 Padding="20">
 
-                <VerticalStackLayout Spacing="12">
+                <VerticalStackLayout Spacing="10">
 
                     <Label
                         Text="Nuevo estudiante"
@@ -35,55 +35,78 @@
                         TextColor="#111827" />
 
                     <Entry
-                        x:Name="MatriculaEntry"
                         Placeholder="Matrícula"
+                        Text="{Binding Matricula}"
                         BackgroundColor="#F9FAFB" />
 
+                    <Label
+                        Text="{Binding MatriculaError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorMatricula}" />
+
                     <Entry
-                        x:Name="NombreEntry"
                         Placeholder="Nombre"
+                        Text="{Binding Nombre}"
                         BackgroundColor="#F9FAFB" />
 
+                    <Label
+                        Text="{Binding NombreError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorNombre}" />
+
                     <Entry
-                        x:Name="ApellidoEntry"
                         Placeholder="Apellido"
+                        Text="{Binding Apellido}"
                         BackgroundColor="#F9FAFB" />
 
+                    <Label
+                        Text="{Binding ApellidoError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorApellido}" />
+
                     <Entry
-                        x:Name="CarreraEntry"
                         Placeholder="Carrera"
+                        Text="{Binding Carrera}"
                         BackgroundColor="#F9FAFB" />
 
+                    <Label
+                        Text="{Binding CarreraError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorCarrera}" />
+
                     <Entry
-                        x:Name="TelefonoEntry"
                         Placeholder="Teléfono"
+                        Text="{Binding Telefono}"
                         Keyboard="Telephone"
                         BackgroundColor="#F9FAFB" />
 
                     <Label
-                        x:Name="MensajeLabel"
-                        Text=""
-                        FontSize="14"
+                        Text="{Binding TelefonoError}"
+                        FontSize="13"
                         TextColor="#DC2626"
-                        IsVisible="False" />
+                        IsVisible="{Binding TieneErrorTelefono}" />
 
                     <Button
                         Text="Guardar estudiante"
+                        Command="{Binding GuardarEstudianteCommand}"
                         BackgroundColor="#4F46E5"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="50"
-                        Clicked="OnGuardarEstudianteClicked" />
+                        HeightRequest="50" />
 
                     <Button
                         Text="Limpiar formulario"
+                        Command="{Binding LimpiarFormularioCommand}"
                         BackgroundColor="#111827"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="48"
-                        Clicked="OnLimpiarFormularioClicked" />
+                        HeightRequest="48" />
 
                 </VerticalStackLayout>
             </Border>
@@ -95,7 +118,7 @@
                 TextColor="#111827" />
 
             <CollectionView
-                x:Name="EstudiantesCollectionView"
+                ItemsSource="{Binding Estudiantes}"
                 EmptyView="No hay estudiantes registrados todavía.">
 
                 <CollectionView.ItemTemplate>
