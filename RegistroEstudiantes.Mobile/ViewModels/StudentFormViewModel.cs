@@ -93,7 +93,7 @@ public partial class StudentFormViewModel : ObservableObject
             return;
         }
 
-        await Shell.Current.DisplayAlert(
+        await Shell.Current.DisplayAlertAsync(
             "Estudiante guardado",
             "La información del estudiante fue validada correctamente.",
             "Aceptar");
