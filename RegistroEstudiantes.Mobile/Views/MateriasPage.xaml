@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.MateriasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F4F6F8"
+    Title="Materias">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
+
+            <Label
+                Text="Materias"
+                FontSize="30"
+                FontAttributes="Bold"
+                TextColor="#111827" />
+
+            <Label
+                Text="Registra materias académicas y consulta las materias guardadas en memoria."
+                FontSize="16"
+                TextColor="#6B7280" />
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="Nueva materia"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#111827" />
+
+                    <Entry
+                        Placeholder="Código de la materia"
+                        Text="{Binding Codigo}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding CodigoError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorCodigo}" />
+
+                    <Entry
+                        Placeholder="Nombre de la materia"
+                        Text="{Binding Nombre}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding NombreError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorNombre}" />
+
+                    <Entry
+                        Placeholder="Profesor"
+                        Text="{Binding Profesor}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding ProfesorError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorProfesor}" />
+
+                    <Entry
+                        Placeholder="Créditos"
+                        Text="{Binding CreditosTexto}"
+                        Keyboard="Numeric"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding CreditosError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorCreditos}" />
+
+                    <Button
+                        Text="Guardar materia"
+                        Command="{Binding GuardarMateriaCommand}"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50" />
+
+                    <Button
+                        Text="Limpiar formulario"
+                        Command="{Binding LimpiarFormularioCommand}"
+                        BackgroundColor="#111827"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="48" />
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                Text="Listado de materias"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="#111827" />
+
+            <CollectionView
+                ItemsSource="{Binding Materias}"
+                EmptyView="No hay materias registradas todavía.">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            BackgroundColor="White"
+                            Stroke="#E5E7EB"
+                            StrokeThickness="1"
+                            Padding="16"
+                            Margin="0,0,0,12">
+
+                            <VerticalStackLayout Spacing="6">
+
+                                <Label
+                                    Text="{Binding DescripcionCorta}"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#111827" />
+
+                                <Label
+                                    Text="{Binding Profesor}"
+                                    FontSize="14"
+                                    TextColor="#4B5563" />
+
+                                <Label
+                                    Text="{Binding Creditos, StringFormat='Créditos: {0}'}"
+                                    FontSize="14"
+                                    TextColor="#4F46E5"
+                                    FontAttributes="Bold" />
+
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

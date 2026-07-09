@@ -1,88 +1,51 @@
-\# Registro de Estudiantes
+# Control Académico Estudiantil
 
+Proyecto académico para la asignatura **INF-4316 - Programación de Aplicaciones Móviles**.
 
+Este repositorio corresponde al proyecto móvil del **Grupo #6** y se trabaja por unidades mediante ramas de Git.
 
-Proyecto académico para la asignatura Programación de Aplicaciones Móviles.
+## Integrantes
 
+- Junior Valera
+- Yisel Santana
 
+## Rama actual
 
-\## Integrantes
+```txt
+unidad-4
 
+# La rama unidad-4 corresponde a la Actividad 4 - MVVM y validaciones inline.
 
+## Objetivo de la Unidad 4
 
-\- Junior Valera
+Refactorizar los formularios principales de la aplicación para aplicar el patrón MVVM y mostrar validaciones detalladas debajo de cada campo, evitando mostrar los errores como ventanas emergentes.
 
-\- Yisel Santana
+La aplicación mantiene el enfoque académico de la unidad anterior, pero ahora separa mejor la lógica de la interfaz usando ViewModels, comandos y binding.
 
+## Descripción de la aplicación
 
+Control Académico Estudiantil es una aplicación móvil desarrollada con .NET MAUI para registrar y consultar información académica básica desde un dispositivo móvil.
 
-\## Descripción del proyecto
+## La app permite trabajar con las siguientes secciones:
 
+Estudiantes
+Materias
+Asistencias
+Calificaciones
 
+## Los datos se manejan temporalmente en memoria mediante el servicio ServicioAcademico.
 
-Esta aplicación tiene como objetivo representar visualmente un sistema móvil para el registro de estudiantes.
-
-
-
-En esta unidad se trabajará principalmente la estructura visual de la aplicación usando .NET MAUI, cumpliendo con las pantallas solicitadas por el docente:
-
-
-
-1\. Login
-
-2\. Pantalla principal
-
-3\. Listado de estudiantes
-
-4\. Formulario de creación/edición de estudiante
-
-
-
-Como valor agregado, el proyecto incluirá una API backend en ASP.NET Core para preparar la aplicación hacia una arquitectura más completa.
-
-
-
-\## Entidad principal
-
-
-
-La entidad principal del proyecto es Estudiante.
-
-
-
-Campos principales:
-
-
-
-\- Id
-
-\- Nombre
-
-\- Apellido
-
-\- Matrícula
-
-\- Correo
-
-\- Teléfono
-
-\- Carrera
-
-\- Fecha de nacimiento
-
-\- Estado
-
-
-
-\## Tecnologías previstas
-
-
-
-\- .NET MAUI
-
-\- C#
-
-\- ASP.NET Core Web API
-
-\- Git y GitHub
-
+Funcionalidades principales
+Login funcional con credenciales fijas.
+Navegación entre pantallas después del login.
+Menú lateral para acceder a los módulos.
+Opción para cerrar sesión.
+Uso del paquete CommunityToolkit.Mvvm.
+ViewModel para cada entidad principal.
+Formularios conectados por binding.
+Botones conectados mediante commands.
+Validaciones inline debajo de cada campo.
+Validaciones específicas por módulo.
+Alertas de éxito cuando el registro se guarda correctamente.
+Limpieza automática del formulario después de guardar.
+Listados actualizados con los nuevos registros.
