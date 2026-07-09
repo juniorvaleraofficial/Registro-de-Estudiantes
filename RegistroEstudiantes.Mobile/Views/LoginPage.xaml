@@ -14,7 +14,7 @@
             Padding="28"
             VerticalOptions="Center">
 
-            <VerticalStackLayout Spacing="18">
+            <VerticalStackLayout Spacing="14">
 
                 <Label
                     Text="Control Académico Estudiantil"
@@ -32,32 +32,37 @@
                     HorizontalTextAlignment="Center" />
 
                 <Entry
-                    x:Name="UsuarioEntry"
                     Placeholder="Usuario"
+                    Text="{Binding Usuario}"
                     BackgroundColor="#F9FAFB"
                     Keyboard="Text" />
 
+                <Label
+                    Text="{Binding UsuarioError}"
+                    FontSize="13"
+                    TextColor="#DC2626"
+                    IsVisible="{Binding TieneErrorUsuario}" />
+
                 <Entry
-                    x:Name="ContrasenaEntry"
                     Placeholder="Contraseña"
+                    Text="{Binding Contrasena}"
                     IsPassword="True"
                     BackgroundColor="#F9FAFB" />
 
                 <Label
-                    x:Name="MensajeErrorLabel"
-                    Text=""
+                    Text="{Binding ContrasenaError}"
                     FontSize="13"
                     TextColor="#DC2626"
-                    IsVisible="False" />
+                    IsVisible="{Binding TieneErrorContrasena}" />
 
                 <Button
                     Text="Entrar"
+                    Command="{Binding IniciarSesionCommand}"
                     BackgroundColor="#4F46E5"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="10"
-                    HeightRequest="50"
-                    Clicked="OnLoginClicked" />
+                    HeightRequest="50" />
 
                 <Label
                     Text="Usuario de prueba: admin   |   Clave: 1234"
