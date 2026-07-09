@@ -26,7 +26,7 @@
                 StrokeThickness="1"
                 Padding="20">
 
-                <VerticalStackLayout Spacing="12">
+                <VerticalStackLayout Spacing="10">
 
                     <Label
                         Text="Nueva materia"
@@ -35,50 +35,67 @@
                         TextColor="#111827" />
 
                     <Entry
-                        x:Name="CodigoEntry"
                         Placeholder="Código de la materia"
+                        Text="{Binding Codigo}"
                         BackgroundColor="#F9FAFB" />
 
+                    <Label
+                        Text="{Binding CodigoError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorCodigo}" />
+
                     <Entry
-                        x:Name="NombreEntry"
                         Placeholder="Nombre de la materia"
+                        Text="{Binding Nombre}"
                         BackgroundColor="#F9FAFB" />
 
+                    <Label
+                        Text="{Binding NombreError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorNombre}" />
+
                     <Entry
-                        x:Name="ProfesorEntry"
                         Placeholder="Profesor"
+                        Text="{Binding Profesor}"
                         BackgroundColor="#F9FAFB" />
 
+                    <Label
+                        Text="{Binding ProfesorError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorProfesor}" />
+
                     <Entry
-                        x:Name="CreditosEntry"
                         Placeholder="Créditos"
+                        Text="{Binding CreditosTexto}"
                         Keyboard="Numeric"
                         BackgroundColor="#F9FAFB" />
 
                     <Label
-                        x:Name="MensajeLabel"
-                        Text=""
-                        FontSize="14"
+                        Text="{Binding CreditosError}"
+                        FontSize="13"
                         TextColor="#DC2626"
-                        IsVisible="False" />
+                        IsVisible="{Binding TieneErrorCreditos}" />
 
                     <Button
                         Text="Guardar materia"
+                        Command="{Binding GuardarMateriaCommand}"
                         BackgroundColor="#4F46E5"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="50"
-                        Clicked="OnGuardarMateriaClicked" />
+                        HeightRequest="50" />
 
                     <Button
                         Text="Limpiar formulario"
+                        Command="{Binding LimpiarFormularioCommand}"
                         BackgroundColor="#111827"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="48"
-                        Clicked="OnLimpiarFormularioClicked" />
+                        HeightRequest="48" />
 
                 </VerticalStackLayout>
             </Border>
@@ -90,7 +107,7 @@
                 TextColor="#111827" />
 
             <CollectionView
-                x:Name="MateriasCollectionView"
+                ItemsSource="{Binding Materias}"
                 EmptyView="No hay materias registradas todavía.">
 
                 <CollectionView.ItemTemplate>
