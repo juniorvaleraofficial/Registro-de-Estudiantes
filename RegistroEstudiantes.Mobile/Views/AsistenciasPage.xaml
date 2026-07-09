@@ -26,7 +26,7 @@
                 StrokeThickness="1"
                 Padding="20">
 
-                <VerticalStackLayout Spacing="12">
+                <VerticalStackLayout Spacing="10">
 
                     <Label
                         Text="Nueva asistencia"
@@ -35,48 +35,68 @@
                         TextColor="#111827" />
 
                     <Picker
-                        x:Name="EstudiantePicker"
                         Title="Selecciona un estudiante"
-                        BackgroundColor="#F9FAFB" />
-
-                    <Picker
-                        x:Name="MateriaPicker"
-                        Title="Selecciona una materia"
-                        BackgroundColor="#F9FAFB" />
-
-                    <DatePicker
-                        x:Name="FechaDatePicker"
-                        BackgroundColor="#F9FAFB" />
-
-                    <Picker
-                        x:Name="EstadoPicker"
-                        Title="Estado de asistencia"
+                        ItemsSource="{Binding EstudiantesOpciones}"
+                        SelectedItem="{Binding EstudianteSeleccionado}"
                         BackgroundColor="#F9FAFB" />
 
                     <Label
-                        x:Name="MensajeLabel"
-                        Text=""
-                        FontSize="14"
+                        Text="{Binding EstudianteError}"
+                        FontSize="13"
                         TextColor="#DC2626"
-                        IsVisible="False" />
+                        IsVisible="{Binding TieneErrorEstudiante}" />
+
+                    <Picker
+                        Title="Selecciona una materia"
+                        ItemsSource="{Binding MateriasOpciones}"
+                        SelectedItem="{Binding MateriaSeleccionada}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding MateriaError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorMateria}" />
+
+                    <DatePicker
+                        Date="{Binding Fecha}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding FechaError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorFecha}" />
+
+                    <Picker
+                        Title="Estado de asistencia"
+                        ItemsSource="{Binding EstadosOpciones}"
+                        SelectedItem="{Binding EstadoSeleccionado}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding EstadoError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorEstado}" />
 
                     <Button
                         Text="Guardar asistencia"
+                        Command="{Binding GuardarAsistenciaCommand}"
                         BackgroundColor="#4F46E5"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="50"
-                        Clicked="OnGuardarAsistenciaClicked" />
+                        HeightRequest="50" />
 
                     <Button
                         Text="Limpiar formulario"
+                        Command="{Binding LimpiarFormularioCommand}"
                         BackgroundColor="#111827"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="48"
-                        Clicked="OnLimpiarFormularioClicked" />
+                        HeightRequest="48" />
 
                 </VerticalStackLayout>
             </Border>
@@ -88,7 +108,7 @@
                 TextColor="#111827" />
 
             <CollectionView
-                x:Name="AsistenciasCollectionView"
+                ItemsSource="{Binding Asistencias}"
                 EmptyView="No hay asistencias registradas todavía.">
 
                 <CollectionView.ItemTemplate>
