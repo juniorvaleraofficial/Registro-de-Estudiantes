@@ -26,7 +26,7 @@
                 StrokeThickness="1"
                 Padding="20">
 
-                <VerticalStackLayout Spacing="12">
+                <VerticalStackLayout Spacing="10">
 
                     <Label
                         Text="Nueva calificación"
@@ -35,50 +35,69 @@
                         TextColor="#111827" />
 
                     <Picker
-                        x:Name="EstudiantePicker"
                         Title="Selecciona un estudiante"
-                        BackgroundColor="#F9FAFB" />
-
-                    <Picker
-                        x:Name="MateriaPicker"
-                        Title="Selecciona una materia"
-                        BackgroundColor="#F9FAFB" />
-
-                    <Entry
-                        x:Name="NotaEntry"
-                        Placeholder="Nota de 0 a 100"
-                        Keyboard="Numeric"
-                        BackgroundColor="#F9FAFB" />
-
-                    <Entry
-                        x:Name="ObservacionEntry"
-                        Placeholder="Observación"
+                        ItemsSource="{Binding EstudiantesOpciones}"
+                        SelectedItem="{Binding EstudianteSeleccionado}"
                         BackgroundColor="#F9FAFB" />
 
                     <Label
-                        x:Name="MensajeLabel"
-                        Text=""
-                        FontSize="14"
+                        Text="{Binding EstudianteError}"
+                        FontSize="13"
                         TextColor="#DC2626"
-                        IsVisible="False" />
+                        IsVisible="{Binding TieneErrorEstudiante}" />
+
+                    <Picker
+                        Title="Selecciona una materia"
+                        ItemsSource="{Binding MateriasOpciones}"
+                        SelectedItem="{Binding MateriaSeleccionada}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding MateriaError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorMateria}" />
+
+                    <Entry
+                        Placeholder="Nota de 0 a 100"
+                        Text="{Binding NotaTexto}"
+                        Keyboard="Numeric"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding NotaError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorNota}" />
+
+                    <Entry
+                        Placeholder="Observación"
+                        Text="{Binding Observacion}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding ObservacionError}"
+                        FontSize="13"
+                        TextColor="#DC2626"
+                        IsVisible="{Binding TieneErrorObservacion}" />
 
                     <Button
                         Text="Guardar calificación"
+                        Command="{Binding GuardarCalificacionCommand}"
                         BackgroundColor="#4F46E5"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="50"
-                        Clicked="OnGuardarCalificacionClicked" />
+                        HeightRequest="50" />
 
                     <Button
                         Text="Limpiar formulario"
+                        Command="{Binding LimpiarFormularioCommand}"
                         BackgroundColor="#111827"
                         TextColor="White"
                         FontAttributes="Bold"
                         CornerRadius="10"
-                        HeightRequest="48"
-                        Clicked="OnLimpiarFormularioClicked" />
+                        HeightRequest="48" />
 
                 </VerticalStackLayout>
             </Border>
@@ -90,7 +109,7 @@
                 TextColor="#111827" />
 
             <CollectionView
-                x:Name="CalificacionesCollectionView"
+                ItemsSource="{Binding Calificaciones}"
                 EmptyView="No hay calificaciones registradas todavía.">
 
                 <CollectionView.ItemTemplate>
