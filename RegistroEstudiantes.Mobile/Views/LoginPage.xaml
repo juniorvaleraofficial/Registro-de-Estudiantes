@@ -67,7 +67,7 @@
                     HorizontalTextAlignment="Center" />
 
                 <Label
-                    Text="Proyecto académico - Unidad 3"
+                    Text="Proyecto académico - Unidad 4"
                     FontSize="13"
                     TextColor="#9CA3AF"
                     HorizontalOptions="Center" />

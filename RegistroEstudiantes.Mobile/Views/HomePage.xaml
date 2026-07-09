@@ -28,13 +28,13 @@
 
                 <VerticalStackLayout Spacing="10">
                     <Label
-                        Text="Unidad 3"
+                        Text="Unidad 4"
                         FontSize="20"
                         FontAttributes="Bold"
                         TextColor="#111827" />
 
                     <Label
-                        Text="Esta aplicación permite registrar estudiantes, materias, asistencias y calificaciones usando datos temporales en memoria."
+                        Text="Esta aplicación aplica el patrón MVVM y validaciones inline en los formularios de estudiantes, materias, asistencias y calificaciones."
                         FontSize="15"
                         TextColor="#4B5563" />
                 </VerticalStackLayout>
