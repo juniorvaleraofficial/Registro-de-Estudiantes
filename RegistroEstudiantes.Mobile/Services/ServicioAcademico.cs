@@ -9,6 +9,10 @@ public static class ServicioAcademico
     private static readonly List<Asistencia> asistencias = new();
     private static readonly List<Calificacion> calificaciones = new();
 
+    // =========================================================
+    // ESTUDIANTES
+    // =========================================================
+
     public static IReadOnlyList<Estudiante> ObtenerEstudiantes()
     {
         return estudiantes;
@@ -18,6 +22,38 @@ public static class ServicioAcademico
     {
         estudiantes.Add(estudiante);
     }
+
+    public static bool ActualizarEstudiante(Estudiante estudianteActualizado)
+    {
+        var indice = estudiantes.FindIndex(
+            estudiante => estudiante.Id == estudianteActualizado.Id);
+
+        if (indice < 0)
+        {
+            return false;
+        }
+
+        estudiantes[indice] = estudianteActualizado;
+        return true;
+    }
+
+    public static bool EliminarEstudiante(Guid id)
+    {
+        var estudiante = estudiantes.FirstOrDefault(
+            estudiante => estudiante.Id == id);
+
+        if (estudiante is null)
+        {
+            return false;
+        }
+
+        estudiantes.Remove(estudiante);
+        return true;
+    }
+
+    // =========================================================
+    // MATERIAS
+    // =========================================================
 
     public static IReadOnlyList<Materia> ObtenerMaterias()
     {
@@ -29,6 +65,38 @@ public static class ServicioAcademico
         materias.Add(materia);
     }
 
+    public static bool ActualizarMateria(Materia materiaActualizada)
+    {
+        var indice = materias.FindIndex(
+            materia => materia.Id == materiaActualizada.Id);
+
+        if (indice < 0)
+        {
+            return false;
+        }
+
+        materias[indice] = materiaActualizada;
+        return true;
+    }
+
+    public static bool EliminarMateria(Guid id)
+    {
+        var materia = materias.FirstOrDefault(
+            materia => materia.Id == id);
+
+        if (materia is null)
+        {
+            return false;
+        }
+
+        materias.Remove(materia);
+        return true;
+    }
+
+    // =========================================================
+    // ASISTENCIAS
+    // =========================================================
+
     public static IReadOnlyList<Asistencia> ObtenerAsistencias()
     {
         return asistencias;
@@ -39,6 +107,38 @@ public static class ServicioAcademico
         asistencias.Add(asistencia);
     }
 
+    public static bool ActualizarAsistencia(Asistencia asistenciaActualizada)
+    {
+        var indice = asistencias.FindIndex(
+            asistencia => asistencia.Id == asistenciaActualizada.Id);
+
+        if (indice < 0)
+        {
+            return false;
+        }
+
+        asistencias[indice] = asistenciaActualizada;
+        return true;
+    }
+
+    public static bool EliminarAsistencia(Guid id)
+    {
+        var asistencia = asistencias.FirstOrDefault(
+            asistencia => asistencia.Id == id);
+
+        if (asistencia is null)
+        {
+            return false;
+        }
+
+        asistencias.Remove(asistencia);
+        return true;
+    }
+
+    // =========================================================
+    // CALIFICACIONES
+    // =========================================================
+
     public static IReadOnlyList<Calificacion> ObtenerCalificaciones()
     {
         return calificaciones;
@@ -48,6 +148,39 @@ public static class ServicioAcademico
     {
         calificaciones.Add(calificacion);
     }
+
+    public static bool ActualizarCalificacion(
+        Calificacion calificacionActualizada)
+    {
+        var indice = calificaciones.FindIndex(
+            calificacion => calificacion.Id == calificacionActualizada.Id);
+
+        if (indice < 0)
+        {
+            return false;
+        }
+
+        calificaciones[indice] = calificacionActualizada;
+        return true;
+    }
+
+    public static bool EliminarCalificacion(Guid id)
+    {
+        var calificacion = calificaciones.FirstOrDefault(
+            calificacion => calificacion.Id == id);
+
+        if (calificacion is null)
+        {
+            return false;
+        }
+
+        calificaciones.Remove(calificacion);
+        return true;
+    }
+
+    // =========================================================
+    // DATOS INICIALES PARA PRUEBAS
+    // =========================================================
 
     public static void CargarDatosDePrueba()
     {
