@@ -13,7 +13,31 @@ public partial class StudentsViewModel : ObservableObject
 
     public event Func<string, string, string, Task>? SolicitarAlerta;
 
+    public event Func<string, string, string, string, Task<bool>>?
+        SolicitarConfirmacion;
+
     private bool validacionesActivadas;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TituloFormulario))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonGuardar))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonSecundario))]
+    [NotifyPropertyChangedFor(nameof(MostrarBotonEliminar))]
+    private bool esModoEdicion;
+
+    [ObservableProperty]
+    private Guid? idEnEdicion;
+
+    public string TituloFormulario =>
+        EsModoEdicion ? "Editar estudiante" : "Nuevo estudiante";
+
+    public string TextoBotonGuardar =>
+        EsModoEdicion ? "Guardar cambios" : "Guardar estudiante";
+
+    public string TextoBotonSecundario =>
+        EsModoEdicion ? "Cancelar edición" : "Limpiar formulario";
+
+    public bool MostrarBotonEliminar => EsModoEdicion;
 
     [ObservableProperty]
     private string matricula = string.Empty;
@@ -76,16 +100,53 @@ public partial class StudentsViewModel : ObservableObject
             return;
         }
 
+        var estabaEditando = EsModoEdicion;
+
+        if (estabaEditando && IdEnEdicion is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo editar",
+                    "No se encontró el identificador del estudiante seleccionado.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
         var estudiante = new Estudiante
         {
-            Matricula = Matricula.Trim(),
+            Id = IdEnEdicion ?? Guid.NewGuid(),
+            Matricula = Matricula.Trim().ToUpper(),
             Nombre = Nombre.Trim(),
             Apellido = Apellido.Trim(),
             Carrera = Carrera.Trim(),
             Telefono = Telefono.Trim()
         };
 
-        ServicioAcademico.AgregarEstudiante(estudiante);
+        if (estabaEditando)
+        {
+            var actualizado =
+                ServicioAcademico.ActualizarEstudiante(estudiante);
+
+            if (!actualizado)
+            {
+                if (SolicitarAlerta is not null)
+                {
+                    await SolicitarAlerta(
+                        "No se pudo actualizar",
+                        "El estudiante seleccionado ya no se encuentra disponible.",
+                        "Aceptar");
+                }
+
+                return;
+            }
+        }
+        else
+        {
+            ServicioAcademico.AgregarEstudiante(estudiante);
+        }
 
         CargarEstudiantes();
         LimpiarFormulario();
@@ -93,8 +154,12 @@ public partial class StudentsViewModel : ObservableObject
         if (SolicitarAlerta is not null)
         {
             await SolicitarAlerta(
-                "Estudiante guardado",
-                "El estudiante fue registrado correctamente en memoria.",
+                estabaEditando
+                    ? "Estudiante actualizado"
+                    : "Estudiante guardado",
+                estabaEditando
+                    ? "Los cambios del estudiante se guardaron correctamente."
+                    : "El estudiante fue registrado correctamente en memoria.",
                 "Aceptar");
         }
     }
@@ -104,6 +169,9 @@ public partial class StudentsViewModel : ObservableObject
     {
         validacionesActivadas = false;
 
+        IdEnEdicion = null;
+        EsModoEdicion = false;
+
         Matricula = string.Empty;
         Nombre = string.Empty;
         Apellido = string.Empty;
@@ -111,6 +179,119 @@ public partial class StudentsViewModel : ObservableObject
         Telefono = string.Empty;
 
         LimpiarErrores();
+    }
+
+    [RelayCommand]
+    private void SeleccionarEstudiante(Estudiante? estudiante)
+    {
+        if (estudiante is null)
+        {
+            return;
+        }
+
+        validacionesActivadas = false;
+
+        IdEnEdicion = estudiante.Id;
+        Matricula = estudiante.Matricula;
+        Nombre = estudiante.Nombre;
+        Apellido = estudiante.Apellido;
+        Carrera = estudiante.Carrera;
+        Telefono = estudiante.Telefono;
+
+        LimpiarErrores();
+        EsModoEdicion = true;
+    }
+
+    [RelayCommand]
+    private async Task EliminarEstudianteActualAsync()
+    {
+        if (IdEnEdicion is null)
+        {
+            return;
+        }
+
+        var estudiante = ServicioAcademico
+            .ObtenerEstudiantes()
+            .FirstOrDefault(item => item.Id == IdEnEdicion.Value);
+
+        if (estudiante is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "Estudiante no encontrado",
+                    "El registro seleccionado ya no está disponible.",
+                    "Aceptar");
+            }
+
+            LimpiarFormulario();
+            return;
+        }
+
+        await ConfirmarYEliminarEstudianteAsync(estudiante);
+    }
+
+    [RelayCommand]
+    private async Task EliminarEstudianteDesdeListaAsync(
+        Estudiante? estudiante)
+    {
+        if (estudiante is null)
+        {
+            return;
+        }
+
+        await ConfirmarYEliminarEstudianteAsync(estudiante);
+    }
+
+    private async Task ConfirmarYEliminarEstudianteAsync(
+        Estudiante estudiante)
+    {
+        if (SolicitarConfirmacion is null)
+        {
+            return;
+        }
+
+        var confirmado = await SolicitarConfirmacion(
+            "Eliminar estudiante",
+            $"¿Seguro que deseas eliminar a {estudiante.NombreCompleto}?",
+            "Eliminar",
+            "Cancelar");
+
+        if (!confirmado)
+        {
+            return;
+        }
+
+        var eliminado =
+            ServicioAcademico.EliminarEstudiante(estudiante.Id);
+
+        if (!eliminado)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo eliminar",
+                    "El estudiante ya no se encuentra disponible.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
+        if (IdEnEdicion == estudiante.Id)
+        {
+            LimpiarFormulario();
+        }
+
+        CargarEstudiantes();
+
+        if (SolicitarAlerta is not null)
+        {
+            await SolicitarAlerta(
+                "Estudiante eliminado",
+                "El registro fue eliminado correctamente.",
+                "Aceptar");
+        }
     }
 
     private void CargarEstudiantes()
@@ -212,11 +393,12 @@ public partial class StudentsViewModel : ObservableObject
             RegexOptions.IgnoreCase);
     }
 
-    private static bool ExisteMatricula(string matricula)
+    private bool ExisteMatricula(string matricula)
     {
         return ServicioAcademico
             .ObtenerEstudiantes()
             .Any(estudiante =>
+                estudiante.Id != IdEnEdicion &&
                 estudiante.Matricula.Equals(
                     matricula.Trim(),
                     StringComparison.OrdinalIgnoreCase));
