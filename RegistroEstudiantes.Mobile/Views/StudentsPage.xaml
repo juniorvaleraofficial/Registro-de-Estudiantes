@@ -373,7 +373,7 @@
                         </Border.StrokeShape>
 
                         <Label
-                            Text="{Binding Estudiantes.Count, StringFormat='{0} registros'}"
+                            Text="{Binding TextoCantidadEstudiantes}"
                             FontSize="12"
                             FontAttributes="Bold"
                             TextColor="#720C16" />

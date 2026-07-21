@@ -11,6 +11,11 @@ public partial class StudentsViewModel : ObservableObject
 {
     public ObservableCollection<Estudiante> Estudiantes { get; } = new();
 
+    public string TextoCantidadEstudiantes =>
+        Estudiantes.Count == 1
+            ? "1 registro"
+            : $"{Estudiantes.Count} registros";
+
     public event Func<string, string, string, Task>? SolicitarAlerta;
 
     public event Func<string, string, string, string, Task<bool>>?
@@ -302,6 +307,8 @@ public partial class StudentsViewModel : ObservableObject
         {
             Estudiantes.Add(estudiante);
         }
+
+        OnPropertyChanged(nameof(TextoCantidadEstudiantes));
     }
 
     private bool ValidarFormulario()
