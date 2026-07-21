@@ -11,9 +11,38 @@ public partial class MateriasViewModel : ObservableObject
 {
     public ObservableCollection<Materia> Materias { get; } = new();
 
+    public string TextoCantidadMaterias =>
+        Materias.Count == 1
+            ? "1 registro"
+            : $"{Materias.Count} registros";
+
     public event Func<string, string, string, Task>? SolicitarAlerta;
 
+    public event Func<string, string, string, string, Task<bool>>?
+        SolicitarConfirmacion;
+
     private bool validacionesActivadas;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TituloFormulario))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonGuardar))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonSecundario))]
+    [NotifyPropertyChangedFor(nameof(MostrarBotonEliminar))]
+    private bool esModoEdicion;
+
+    [ObservableProperty]
+    private Guid? idEnEdicion;
+
+    public string TituloFormulario =>
+        EsModoEdicion ? "Editar materia" : "Nueva materia";
+
+    public string TextoBotonGuardar =>
+        EsModoEdicion ? "Guardar cambios" : "Guardar materia";
+
+    public string TextoBotonSecundario =>
+        EsModoEdicion ? "Cancelar edición" : "Limpiar formulario";
+
+    public bool MostrarBotonEliminar => EsModoEdicion;
 
     [ObservableProperty]
     private string codigo = string.Empty;
@@ -67,15 +96,52 @@ public partial class MateriasViewModel : ObservableObject
             return;
         }
 
+        var estabaEditando = EsModoEdicion;
+
+        if (estabaEditando && IdEnEdicion is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo editar",
+                    "No se encontró el identificador de la materia seleccionada.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
         var materia = new Materia
         {
+            Id = IdEnEdicion ?? Guid.NewGuid(),
             Codigo = Codigo.Trim().ToUpper(),
             Nombre = Nombre.Trim(),
             Profesor = Profesor.Trim(),
             Creditos = int.Parse(CreditosTexto.Trim())
         };
 
-        ServicioAcademico.AgregarMateria(materia);
+        if (estabaEditando)
+        {
+            var actualizada =
+                ServicioAcademico.ActualizarMateria(materia);
+
+            if (!actualizada)
+            {
+                if (SolicitarAlerta is not null)
+                {
+                    await SolicitarAlerta(
+                        "No se pudo actualizar",
+                        "La materia seleccionada ya no se encuentra disponible.",
+                        "Aceptar");
+                }
+
+                return;
+            }
+        }
+        else
+        {
+            ServicioAcademico.AgregarMateria(materia);
+        }
 
         CargarMaterias();
         LimpiarFormulario();
@@ -83,8 +149,12 @@ public partial class MateriasViewModel : ObservableObject
         if (SolicitarAlerta is not null)
         {
             await SolicitarAlerta(
-                "Materia guardada",
-                "La materia fue registrada correctamente en memoria.",
+                estabaEditando
+                    ? "Materia actualizada"
+                    : "Materia guardada",
+                estabaEditando
+                    ? "Los cambios de la materia se guardaron correctamente."
+                    : "La materia fue registrada correctamente en memoria.",
                 "Aceptar");
         }
     }
@@ -94,12 +164,127 @@ public partial class MateriasViewModel : ObservableObject
     {
         validacionesActivadas = false;
 
+        IdEnEdicion = null;
+        EsModoEdicion = false;
+
         Codigo = string.Empty;
         Nombre = string.Empty;
         Profesor = string.Empty;
         CreditosTexto = string.Empty;
 
         LimpiarErrores();
+    }
+
+    [RelayCommand]
+    private void SeleccionarMateria(Materia? materia)
+    {
+        if (materia is null)
+        {
+            return;
+        }
+
+        validacionesActivadas = false;
+
+        IdEnEdicion = materia.Id;
+        Codigo = materia.Codigo;
+        Nombre = materia.Nombre;
+        Profesor = materia.Profesor;
+        CreditosTexto = materia.Creditos.ToString();
+
+        LimpiarErrores();
+        EsModoEdicion = true;
+    }
+
+    [RelayCommand]
+    private async Task EliminarMateriaActualAsync()
+    {
+        if (IdEnEdicion is null)
+        {
+            return;
+        }
+
+        var materia = ServicioAcademico
+            .ObtenerMaterias()
+            .FirstOrDefault(item => item.Id == IdEnEdicion.Value);
+
+        if (materia is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "Materia no encontrada",
+                    "El registro seleccionado ya no está disponible.",
+                    "Aceptar");
+            }
+
+            LimpiarFormulario();
+            return;
+        }
+
+        await ConfirmarYEliminarMateriaAsync(materia);
+    }
+
+    [RelayCommand]
+    private async Task EliminarMateriaDesdeListaAsync(
+        Materia? materia)
+    {
+        if (materia is null)
+        {
+            return;
+        }
+
+        await ConfirmarYEliminarMateriaAsync(materia);
+    }
+
+    private async Task ConfirmarYEliminarMateriaAsync(
+        Materia materia)
+    {
+        if (SolicitarConfirmacion is null)
+        {
+            return;
+        }
+
+        var confirmado = await SolicitarConfirmacion(
+            "Eliminar materia",
+            $"¿Seguro que deseas eliminar {materia.DescripcionCorta}?",
+            "Eliminar",
+            "Cancelar");
+
+        if (!confirmado)
+        {
+            return;
+        }
+
+        var eliminada =
+            ServicioAcademico.EliminarMateria(materia.Id);
+
+        if (!eliminada)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo eliminar",
+                    "La materia ya no se encuentra disponible.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
+        if (IdEnEdicion == materia.Id)
+        {
+            LimpiarFormulario();
+        }
+
+        CargarMaterias();
+
+        if (SolicitarAlerta is not null)
+        {
+            await SolicitarAlerta(
+                "Materia eliminada",
+                "El registro fue eliminado correctamente.",
+                "Aceptar");
+        }
     }
 
     private void CargarMaterias()
@@ -110,6 +295,8 @@ public partial class MateriasViewModel : ObservableObject
         {
             Materias.Add(materia);
         }
+
+        OnPropertyChanged(nameof(TextoCantidadMaterias));
     }
 
     private bool ValidarFormulario()
@@ -199,11 +386,12 @@ public partial class MateriasViewModel : ObservableObject
             RegexOptions.IgnoreCase);
     }
 
-    private static bool ExisteCodigoMateria(string codigo)
+    private bool ExisteCodigoMateria(string codigo)
     {
         return ServicioAcademico
             .ObtenerMaterias()
             .Any(materia =>
+                materia.Id != IdEnEdicion &&
                 materia.Codigo.Equals(
                     codigo.Trim(),
                     StringComparison.OrdinalIgnoreCase));
