@@ -1,156 +1,514 @@
 <?xml version="1.0" encoding="utf-8" ?>
+
 <ContentPage
     x:Class="RegistroEstudiantes.Mobile.Views.CalificacionesPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    BackgroundColor="#F4F6F8"
+    xmlns:views="clr-namespace:RegistroEstudiantes.Mobile.Views"
+    BackgroundColor="#F5F6F8"
     Title="Calificaciones">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="18">
+    <CollectionView
+        ItemsSource="{Binding Calificaciones}"
+        SelectionMode="None">
 
-            <Label
-                Text="Calificaciones"
-                FontSize="30"
-                FontAttributes="Bold"
-                TextColor="#111827" />
+        <!-- ================================================= -->
+        <!-- ENCABEZADO Y FORMULARIO                           -->
+        <!-- ================================================= -->
 
-            <Label
-                Text="Registra las calificaciones de los estudiantes por materia."
-                FontSize="16"
-                TextColor="#6B7280" />
+        <CollectionView.Header>
 
-            <Border
-                BackgroundColor="White"
-                Stroke="#E5E7EB"
-                StrokeThickness="1"
-                Padding="20">
+            <VerticalStackLayout Spacing="18">
 
-                <VerticalStackLayout Spacing="10">
+                <!-- Encabezado principal -->
 
-                    <Label
-                        Text="Nueva calificación"
-                        FontSize="20"
-                        FontAttributes="Bold"
-                        TextColor="#111827" />
+                <Border
+                    BackgroundColor="#720C16"
+                    Padding="24,26,24,28"
+                    StrokeThickness="0">
 
-                    <Picker
-                        Title="Selecciona un estudiante"
-                        ItemsSource="{Binding EstudiantesOpciones}"
-                        SelectedItem="{Binding EstudianteSeleccionado}"
-                        BackgroundColor="#F9FAFB" />
+                    <VerticalStackLayout Spacing="7">
 
-                    <Label
-                        Text="{Binding EstudianteError}"
-                        FontSize="13"
-                        TextColor="#DC2626"
-                        IsVisible="{Binding TieneErrorEstudiante}" />
+                        <Label
+                            Text="CONTROL ACADÉMICO"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CharacterSpacing="1.4"
+                            TextColor="#F4D5D8" />
 
-                    <Picker
-                        Title="Selecciona una materia"
-                        ItemsSource="{Binding MateriasOpciones}"
-                        SelectedItem="{Binding MateriaSeleccionada}"
-                        BackgroundColor="#F9FAFB" />
+                        <Label
+                            Text="Calificaciones"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            TextColor="White" />
 
-                    <Label
-                        Text="{Binding MateriaError}"
-                        FontSize="13"
-                        TextColor="#DC2626"
-                        IsVisible="{Binding TieneErrorMateria}" />
+                        <Label
+                            Text="Registra, consulta, edita y elimina las calificaciones de los estudiantes."
+                            FontSize="15"
+                            LineHeight="1.2"
+                            TextColor="#F8E7E9" />
 
-                    <Entry
-                        Placeholder="Nota de 0 a 100"
-                        Text="{Binding NotaTexto}"
-                        Keyboard="Numeric"
-                        BackgroundColor="#F9FAFB" />
+                    </VerticalStackLayout>
 
-                    <Label
-                        Text="{Binding NotaError}"
-                        FontSize="13"
-                        TextColor="#DC2626"
-                        IsVisible="{Binding TieneErrorNota}" />
+                </Border>
 
-                    <Entry
-                        Placeholder="Observación"
-                        Text="{Binding Observacion}"
-                        BackgroundColor="#F9FAFB" />
+                <!-- Tarjeta del formulario -->
 
-                    <Label
-                        Text="{Binding ObservacionError}"
-                        FontSize="13"
-                        TextColor="#DC2626"
-                        IsVisible="{Binding TieneErrorObservacion}" />
+                <Border
+                    Margin="20,0"
+                    Padding="20"
+                    BackgroundColor="White"
+                    Stroke="#E3E5E8"
+                    StrokeThickness="1">
 
-                    <Button
-                        Text="Guardar calificación"
-                        Command="{Binding GuardarCalificacionCommand}"
-                        BackgroundColor="#4F46E5"
-                        TextColor="White"
-                        FontAttributes="Bold"
-                        CornerRadius="10"
-                        HeightRequest="50" />
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
 
-                    <Button
-                        Text="Limpiar formulario"
-                        Command="{Binding LimpiarFormularioCommand}"
-                        BackgroundColor="#111827"
-                        TextColor="White"
-                        FontAttributes="Bold"
-                        CornerRadius="10"
-                        HeightRequest="48" />
+                    <VerticalStackLayout Spacing="14">
 
-                </VerticalStackLayout>
-            </Border>
+                        <!-- Título dinámico -->
 
-            <Label
-                Text="Listado de calificaciones"
-                FontSize="22"
-                FontAttributes="Bold"
-                TextColor="#111827" />
+                        <Grid ColumnDefinitions="*,Auto">
 
-            <CollectionView
-                ItemsSource="{Binding Calificaciones}"
-                EmptyView="No hay calificaciones registradas todavía.">
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Border
-                            BackgroundColor="White"
-                            Stroke="#E5E7EB"
-                            StrokeThickness="1"
-                            Padding="16"
-                            Margin="0,0,0,12">
-
-                            <VerticalStackLayout Spacing="6">
+                            <VerticalStackLayout Spacing="3">
 
                                 <Label
-                                    Text="{Binding Estudiante}"
-                                    FontSize="20"
+                                    Text="{Binding TituloFormulario}"
+                                    FontSize="22"
                                     FontAttributes="Bold"
-                                    TextColor="#111827" />
+                                    TextColor="#171A21" />
 
                                 <Label
-                                    Text="{Binding Materia}"
+                                    Text="Completa los datos de la calificación."
                                     FontSize="14"
-                                    TextColor="#4B5563" />
-
-                                <Label
-                                    Text="{Binding Nota, StringFormat='Nota: {0}'}"
-                                    FontSize="14"
-                                    TextColor="#4F46E5"
-                                    FontAttributes="Bold" />
-
-                                <Label
-                                    Text="{Binding Observacion}"
-                                    FontSize="14"
-                                    TextColor="#4B5563" />
+                                    TextColor="#747A86" />
 
                             </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                            <Border
+                                Grid.Column="1"
+                                Padding="10,5"
+                                BackgroundColor="#FFF1F2"
+                                Stroke="#F5C2C7"
+                                StrokeThickness="1"
+                                IsVisible="{Binding EsModoEdicion}"
+                                VerticalOptions="Start">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20" />
+                                </Border.StrokeShape>
+
+                                <Label
+                                    Text="Editando"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#A61120" />
+
+                            </Border>
+
+                        </Grid>
+
+                        <!-- Estudiante -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Estudiante"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Border
+                                Padding="12,2"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Picker
+                                    Title="Selecciona un estudiante"
+                                    ItemsSource="{Binding EstudiantesOpciones}"
+                                    SelectedItem="{Binding EstudianteSeleccionado, Mode=TwoWay}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    TitleColor="#9AA0AA"
+                                    HorizontalOptions="Fill" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding EstudianteError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorEstudiante}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Materia -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Materia"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Border
+                                Padding="12,2"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Picker
+                                    Title="Selecciona una materia"
+                                    ItemsSource="{Binding MateriasOpciones}"
+                                    SelectedItem="{Binding MateriaSeleccionada, Mode=TwoWay}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    TitleColor="#9AA0AA"
+                                    HorizontalOptions="Fill" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding MateriaError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorMateria}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Nota -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Nota"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Border
+                                Padding="12,2"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Entry
+                                    Placeholder="Nota de 0 a 100"
+                                    Text="{Binding NotaTexto, Mode=TwoWay}"
+                                    Keyboard="Numeric"
+                                    ClearButtonVisibility="WhileEditing"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    PlaceholderColor="#9AA0AA" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding NotaError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorNota}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Observación -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Observación"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Label
+                                Text="Opcional, máximo 120 caracteres."
+                                FontSize="12"
+                                TextColor="#858B95" />
+
+                            <Border
+                                Padding="12,8"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Editor
+                                    Placeholder="Escribe una observación"
+                                    Text="{Binding Observacion, Mode=TwoWay}"
+                                    AutoSize="TextChanges"
+                                    MinimumHeightRequest="80"
+                                    MaxLength="120"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    PlaceholderColor="#9AA0AA" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding ObservacionError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorObservacion}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Guardar -->
+
+                        <Button
+                            Text="{Binding TextoBotonGuardar}"
+                            Command="{Binding GuardarCalificacionCommand}"
+                            Margin="0,6,0,0"
+                            HeightRequest="52"
+                            BackgroundColor="#720C16"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12" />
+
+                        <!-- Limpiar o cancelar -->
+
+                        <Button
+                            Text="{Binding TextoBotonSecundario}"
+                            Command="{Binding LimpiarFormularioCommand}"
+                            HeightRequest="50"
+                            BackgroundColor="#ECEEF1"
+                            TextColor="#272B34"
+                            FontAttributes="Bold"
+                            CornerRadius="12" />
+
+                        <!-- Eliminar desde el formulario -->
+
+                        <Button
+                            Text="Eliminar calificación"
+                            Command="{Binding EliminarCalificacionActualCommand}"
+                            IsVisible="{Binding MostrarBotonEliminar}"
+                            HeightRequest="50"
+                            BackgroundColor="#FFF0F1"
+                            TextColor="#B4232D"
+                            BorderColor="#E5A2A8"
+                            BorderWidth="1"
+                            FontAttributes="Bold"
+                            CornerRadius="12" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Encabezado del listado -->
+
+                <Grid
+                    Margin="20,4,20,0"
+                    ColumnDefinitions="*,Auto">
+
+                    <VerticalStackLayout Spacing="2">
+
+                        <Label
+                            Text="Calificaciones registradas"
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="#171A21" />
+
+                        <Label
+                            Text="Toca una tarjeta para editar sus datos."
+                            FontSize="14"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                    <Border
+                        Grid.Column="1"
+                        Padding="10,5"
+                        BackgroundColor="#F1E7E8"
+                        StrokeThickness="0"
+                        VerticalOptions="Center">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+
+                        <Label
+                            Text="{Binding TextoCantidadCalificaciones}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#720C16" />
+
+                    </Border>
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </CollectionView.Header>
+
+        <!-- ================================================= -->
+        <!-- LISTADO DE CALIFICACIONES                         -->
+        <!-- ================================================= -->
+
+        <CollectionView.ItemTemplate>
+
+            <DataTemplate>
+
+                <Border
+                    Margin="20,12,20,0"
+                    Padding="17"
+                    BackgroundColor="White"
+                    Stroke="#E0E3E7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <Border.GestureRecognizers>
+
+                        <TapGestureRecognizer
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type views:CalificacionesPage}}, Path=BindingContext.SeleccionarCalificacionCommand}"
+                            CommandParameter="{Binding .}" />
+
+                    </Border.GestureRecognizers>
+
+                    <Grid
+                        RowDefinitions="Auto,Auto"
+                        ColumnDefinitions="*,Auto"
+                        RowSpacing="12"
+                        ColumnSpacing="12">
+
+                        <VerticalStackLayout Spacing="6">
+
+                            <Label
+                                Text="{Binding Estudiante}"
+                                FontSize="19"
+                                FontAttributes="Bold"
+                                TextColor="#171A21"
+                                LineBreakMode="TailTruncation" />
+
+                            <Label
+                                Text="{Binding Materia}"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#720C16"
+                                LineBreakMode="TailTruncation" />
+
+                            <Border
+                                Padding="10,5"
+                                Margin="0,2,0,0"
+                                BackgroundColor="#F1E7E8"
+                                StrokeThickness="0"
+                                HorizontalOptions="Start">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20" />
+                                </Border.StrokeShape>
+
+                                <Label
+                                    Text="{Binding Nota, StringFormat='Nota: {0:0.##}'}"
+                                    FontSize="13"
+                                    FontAttributes="Bold"
+                                    TextColor="#720C16" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding Observacion, StringFormat='Observación: {0}'}"
+                                FontSize="14"
+                                TextColor="#747A86"
+                                LineBreakMode="WordWrap" />
+
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="1"
+                            Text="Eliminar"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type views:CalificacionesPage}}, Path=BindingContext.EliminarCalificacionDesdeListaCommand}"
+                            CommandParameter="{Binding .}"
+                            Padding="13,8"
+                            MinimumHeightRequest="38"
+                            VerticalOptions="Start"
+                            BackgroundColor="#FFF0F1"
+                            TextColor="#B4232D"
+                            BorderColor="#EDB4B9"
+                            BorderWidth="1"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="10" />
+
+                        <Label
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            Text="Toca esta tarjeta para cargar la calificación en el formulario."
+                            FontSize="12"
+                            TextColor="#8A909A" />
+
+                    </Grid>
+
+                </Border>
+
+            </DataTemplate>
+
+        </CollectionView.ItemTemplate>
+
+        <!-- Lista vacía -->
+
+        <CollectionView.EmptyView>
+
+            <Border
+                Margin="20,18,20,30"
+                Padding="24"
+                BackgroundColor="White"
+                Stroke="#E0E3E7"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="6">
+
+                    <Label
+                        Text="No hay calificaciones"
+                        HorizontalTextAlignment="Center"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#343944" />
+
+                    <Label
+                        Text="Completa el formulario para registrar la primera calificación."
+                        HorizontalTextAlignment="Center"
+                        FontSize="14"
+                        TextColor="#747A86" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </CollectionView.EmptyView>
+
+        <CollectionView.Footer>
+
+            <BoxView
+                HeightRequest="30"
+                Color="Transparent" />
+
+        </CollectionView.Footer>
+
+    </CollectionView>
+
 </ContentPage>
