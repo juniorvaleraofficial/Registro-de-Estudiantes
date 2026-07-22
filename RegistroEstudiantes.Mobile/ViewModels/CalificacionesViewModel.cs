@@ -13,9 +13,44 @@ public partial class CalificacionesViewModel : ObservableObject
     public ObservableCollection<string> MateriasOpciones { get; } = new();
     public ObservableCollection<Calificacion> Calificaciones { get; } = new();
 
+    public string TextoCantidadCalificaciones =>
+        Calificaciones.Count == 1
+            ? "1 registro"
+            : $"{Calificaciones.Count} registros";
+
     public event Func<string, string, string, Task>? SolicitarAlerta;
 
+    public event Func<string, string, string, string, Task<bool>>?
+        SolicitarConfirmacion;
+
     private bool validacionesActivadas;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TituloFormulario))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonGuardar))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonSecundario))]
+    [NotifyPropertyChangedFor(nameof(MostrarBotonEliminar))]
+    private bool esModoEdicion;
+
+    [ObservableProperty]
+    private Guid? idEnEdicion;
+
+    public string TituloFormulario =>
+        EsModoEdicion
+            ? "Editar calificación"
+            : "Nueva calificación";
+
+    public string TextoBotonGuardar =>
+        EsModoEdicion
+            ? "Guardar cambios"
+            : "Guardar calificación";
+
+    public string TextoBotonSecundario =>
+        EsModoEdicion
+            ? "Cancelar edición"
+            : "Limpiar formulario";
+
+    public bool MostrarBotonEliminar => EsModoEdicion;
 
     [ObservableProperty]
     private string? estudianteSeleccionado;
@@ -71,17 +106,56 @@ public partial class CalificacionesViewModel : ObservableObject
             return;
         }
 
+        var estabaEditando = EsModoEdicion;
+
+        if (estabaEditando && IdEnEdicion is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo editar",
+                    "No se encontró el identificador de la calificación seleccionada.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
         var nota = ConvertirNota(NotaTexto);
 
         var calificacion = new Calificacion
         {
-            Estudiante = EstudianteSeleccionado?.Trim() ?? string.Empty,
-            Materia = MateriaSeleccionada?.Trim() ?? string.Empty,
+            Id = IdEnEdicion ?? Guid.NewGuid(),
+            Estudiante =
+                EstudianteSeleccionado?.Trim() ?? string.Empty,
+            Materia =
+                MateriaSeleccionada?.Trim() ?? string.Empty,
             Nota = nota,
             Observacion = Observacion.Trim()
         };
 
-        ServicioAcademico.AgregarCalificacion(calificacion);
+        if (estabaEditando)
+        {
+            var actualizada =
+                ServicioAcademico.ActualizarCalificacion(calificacion);
+
+            if (!actualizada)
+            {
+                if (SolicitarAlerta is not null)
+                {
+                    await SolicitarAlerta(
+                        "No se pudo actualizar",
+                        "La calificación seleccionada ya no se encuentra disponible.",
+                        "Aceptar");
+                }
+
+                return;
+            }
+        }
+        else
+        {
+            ServicioAcademico.AgregarCalificacion(calificacion);
+        }
 
         CargarCalificaciones();
         LimpiarFormulario();
@@ -89,8 +163,12 @@ public partial class CalificacionesViewModel : ObservableObject
         if (SolicitarAlerta is not null)
         {
             await SolicitarAlerta(
-                "Calificación guardada",
-                "La calificación fue registrada correctamente en memoria.",
+                estabaEditando
+                    ? "Calificación actualizada"
+                    : "Calificación guardada",
+                estabaEditando
+                    ? "Los cambios de la calificación se guardaron correctamente."
+                    : "La calificación fue registrada correctamente en memoria.",
                 "Aceptar");
         }
     }
@@ -100,12 +178,131 @@ public partial class CalificacionesViewModel : ObservableObject
     {
         validacionesActivadas = false;
 
+        IdEnEdicion = null;
+        EsModoEdicion = false;
+
         EstudianteSeleccionado = null;
         MateriaSeleccionada = null;
         NotaTexto = string.Empty;
         Observacion = string.Empty;
 
         LimpiarErrores();
+    }
+
+    [RelayCommand]
+    private void SeleccionarCalificacion(
+        Calificacion? calificacion)
+    {
+        if (calificacion is null)
+        {
+            return;
+        }
+
+        validacionesActivadas = false;
+
+        IdEnEdicion = calificacion.Id;
+        EstudianteSeleccionado = calificacion.Estudiante;
+        MateriaSeleccionada = calificacion.Materia;
+        NotaTexto = calificacion.Nota.ToString(
+            CultureInfo.InvariantCulture);
+        Observacion = calificacion.Observacion;
+
+        LimpiarErrores();
+        EsModoEdicion = true;
+    }
+
+    [RelayCommand]
+    private async Task EliminarCalificacionActualAsync()
+    {
+        if (IdEnEdicion is null)
+        {
+            return;
+        }
+
+        var calificacion = ServicioAcademico
+            .ObtenerCalificaciones()
+            .FirstOrDefault(
+                item => item.Id == IdEnEdicion.Value);
+
+        if (calificacion is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "Calificación no encontrada",
+                    "El registro seleccionado ya no está disponible.",
+                    "Aceptar");
+            }
+
+            LimpiarFormulario();
+            return;
+        }
+
+        await ConfirmarYEliminarCalificacionAsync(calificacion);
+    }
+
+    [RelayCommand]
+    private async Task EliminarCalificacionDesdeListaAsync(
+        Calificacion? calificacion)
+    {
+        if (calificacion is null)
+        {
+            return;
+        }
+
+        await ConfirmarYEliminarCalificacionAsync(calificacion);
+    }
+
+    private async Task ConfirmarYEliminarCalificacionAsync(
+        Calificacion calificacion)
+    {
+        if (SolicitarConfirmacion is null)
+        {
+            return;
+        }
+
+        var confirmado = await SolicitarConfirmacion(
+            "Eliminar calificación",
+            $"¿Seguro que deseas eliminar la calificación de " +
+            $"{calificacion.Estudiante} en {calificacion.Materia}?",
+            "Eliminar",
+            "Cancelar");
+
+        if (!confirmado)
+        {
+            return;
+        }
+
+        var eliminada =
+            ServicioAcademico.EliminarCalificacion(calificacion.Id);
+
+        if (!eliminada)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo eliminar",
+                    "La calificación ya no se encuentra disponible.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
+        if (IdEnEdicion == calificacion.Id)
+        {
+            LimpiarFormulario();
+        }
+
+        CargarCalificaciones();
+
+        if (SolicitarAlerta is not null)
+        {
+            await SolicitarAlerta(
+                "Calificación eliminada",
+                "El registro fue eliminado correctamente.",
+                "Aceptar");
+        }
     }
 
     private void CargarOpciones()
@@ -128,10 +325,13 @@ public partial class CalificacionesViewModel : ObservableObject
     {
         Calificaciones.Clear();
 
-        foreach (var calificacion in ServicioAcademico.ObtenerCalificaciones())
+        foreach (var calificacion
+                 in ServicioAcademico.ObtenerCalificaciones())
         {
             Calificaciones.Add(calificacion);
         }
+
+        OnPropertyChanged(nameof(TextoCantidadCalificaciones));
     }
 
     private bool ValidarFormulario()
@@ -221,8 +421,14 @@ public partial class CalificacionesViewModel : ObservableObject
         return ServicioAcademico
             .ObtenerCalificaciones()
             .Any(calificacion =>
-                calificacion.Estudiante.Equals(EstudianteSeleccionado, StringComparison.OrdinalIgnoreCase) &&
-                calificacion.Materia.Equals(MateriaSeleccionada, StringComparison.OrdinalIgnoreCase));
+                (!IdEnEdicion.HasValue ||
+                 calificacion.Id != IdEnEdicion.Value) &&
+                calificacion.Estudiante.Equals(
+                    EstudianteSeleccionado,
+                    StringComparison.OrdinalIgnoreCase) &&
+                calificacion.Materia.Equals(
+                    MateriaSeleccionada,
+                    StringComparison.OrdinalIgnoreCase));
     }
 
     private void LimpiarErrores()
