@@ -13,9 +13,38 @@ public partial class AsistenciasViewModel : ObservableObject
     public ObservableCollection<string> EstadosOpciones { get; } = new();
     public ObservableCollection<Asistencia> Asistencias { get; } = new();
 
+    public string TextoCantidadAsistencias =>
+        Asistencias.Count == 1
+            ? "1 registro"
+            : $"{Asistencias.Count} registros";
+
     public event Func<string, string, string, Task>? SolicitarAlerta;
 
+    public event Func<string, string, string, string, Task<bool>>?
+        SolicitarConfirmacion;
+
     private bool validacionesActivadas;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TituloFormulario))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonGuardar))]
+    [NotifyPropertyChangedFor(nameof(TextoBotonSecundario))]
+    [NotifyPropertyChangedFor(nameof(MostrarBotonEliminar))]
+    private bool esModoEdicion;
+
+    [ObservableProperty]
+    private Guid? idEnEdicion;
+
+    public string TituloFormulario =>
+        EsModoEdicion ? "Editar asistencia" : "Nueva asistencia";
+
+    public string TextoBotonGuardar =>
+        EsModoEdicion ? "Guardar cambios" : "Guardar asistencia";
+
+    public string TextoBotonSecundario =>
+        EsModoEdicion ? "Cancelar edición" : "Limpiar formulario";
+
+    public bool MostrarBotonEliminar => EsModoEdicion;
 
     [ObservableProperty]
     private string? estudianteSeleccionado;
@@ -71,15 +100,55 @@ public partial class AsistenciasViewModel : ObservableObject
             return;
         }
 
+        var estabaEditando = EsModoEdicion;
+
+        if (estabaEditando && IdEnEdicion is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo editar",
+                    "No se encontró el identificador de la asistencia seleccionada.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
         var asistencia = new Asistencia
         {
-            Estudiante = EstudianteSeleccionado?.Trim() ?? string.Empty,
-            Materia = MateriaSeleccionada?.Trim() ?? string.Empty,
-            Fecha = Fecha,
-            Estado = EstadoSeleccionado?.Trim() ?? string.Empty
+            Id = IdEnEdicion ?? Guid.NewGuid(),
+            Estudiante =
+                EstudianteSeleccionado?.Trim() ?? string.Empty,
+            Materia =
+                MateriaSeleccionada?.Trim() ?? string.Empty,
+            Fecha = Fecha.Date,
+            Estado =
+                EstadoSeleccionado?.Trim() ?? string.Empty
         };
 
-        ServicioAcademico.AgregarAsistencia(asistencia);
+        if (estabaEditando)
+        {
+            var actualizada =
+                ServicioAcademico.ActualizarAsistencia(asistencia);
+
+            if (!actualizada)
+            {
+                if (SolicitarAlerta is not null)
+                {
+                    await SolicitarAlerta(
+                        "No se pudo actualizar",
+                        "La asistencia seleccionada ya no se encuentra disponible.",
+                        "Aceptar");
+                }
+
+                return;
+            }
+        }
+        else
+        {
+            ServicioAcademico.AgregarAsistencia(asistencia);
+        }
 
         CargarAsistencias();
         LimpiarFormulario();
@@ -87,8 +156,12 @@ public partial class AsistenciasViewModel : ObservableObject
         if (SolicitarAlerta is not null)
         {
             await SolicitarAlerta(
-                "Asistencia guardada",
-                "La asistencia fue registrada correctamente en memoria.",
+                estabaEditando
+                    ? "Asistencia actualizada"
+                    : "Asistencia guardada",
+                estabaEditando
+                    ? "Los cambios de la asistencia se guardaron correctamente."
+                    : "La asistencia fue registrada correctamente en memoria.",
                 "Aceptar");
         }
     }
@@ -98,12 +171,128 @@ public partial class AsistenciasViewModel : ObservableObject
     {
         validacionesActivadas = false;
 
+        IdEnEdicion = null;
+        EsModoEdicion = false;
+
         EstudianteSeleccionado = null;
         MateriaSeleccionada = null;
         Fecha = DateTime.Today;
         EstadoSeleccionado = null;
 
         LimpiarErrores();
+    }
+
+    [RelayCommand]
+    private void SeleccionarAsistencia(Asistencia? asistencia)
+    {
+        if (asistencia is null)
+        {
+            return;
+        }
+
+        validacionesActivadas = false;
+
+        IdEnEdicion = asistencia.Id;
+        EstudianteSeleccionado = asistencia.Estudiante;
+        MateriaSeleccionada = asistencia.Materia;
+        Fecha = asistencia.Fecha;
+        EstadoSeleccionado = asistencia.Estado;
+
+        LimpiarErrores();
+        EsModoEdicion = true;
+    }
+
+    [RelayCommand]
+    private async Task EliminarAsistenciaActualAsync()
+    {
+        if (IdEnEdicion is null)
+        {
+            return;
+        }
+
+        var asistencia = ServicioAcademico
+            .ObtenerAsistencias()
+            .FirstOrDefault(item => item.Id == IdEnEdicion.Value);
+
+        if (asistencia is null)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "Asistencia no encontrada",
+                    "El registro seleccionado ya no está disponible.",
+                    "Aceptar");
+            }
+
+            LimpiarFormulario();
+            return;
+        }
+
+        await ConfirmarYEliminarAsistenciaAsync(asistencia);
+    }
+
+    [RelayCommand]
+    private async Task EliminarAsistenciaDesdeListaAsync(
+        Asistencia? asistencia)
+    {
+        if (asistencia is null)
+        {
+            return;
+        }
+
+        await ConfirmarYEliminarAsistenciaAsync(asistencia);
+    }
+
+    private async Task ConfirmarYEliminarAsistenciaAsync(
+        Asistencia asistencia)
+    {
+        if (SolicitarConfirmacion is null)
+        {
+            return;
+        }
+
+        var confirmado = await SolicitarConfirmacion(
+            "Eliminar asistencia",
+            $"¿Seguro que deseas eliminar la asistencia de " +
+            $"{asistencia.Estudiante} en {asistencia.Materia}?",
+            "Eliminar",
+            "Cancelar");
+
+        if (!confirmado)
+        {
+            return;
+        }
+
+        var eliminada =
+            ServicioAcademico.EliminarAsistencia(asistencia.Id);
+
+        if (!eliminada)
+        {
+            if (SolicitarAlerta is not null)
+            {
+                await SolicitarAlerta(
+                    "No se pudo eliminar",
+                    "La asistencia ya no se encuentra disponible.",
+                    "Aceptar");
+            }
+
+            return;
+        }
+
+        if (IdEnEdicion == asistencia.Id)
+        {
+            LimpiarFormulario();
+        }
+
+        CargarAsistencias();
+
+        if (SolicitarAlerta is not null)
+        {
+            await SolicitarAlerta(
+                "Asistencia eliminada",
+                "El registro fue eliminado correctamente.",
+                "Aceptar");
+        }
     }
 
     private void CargarOpciones()
@@ -135,6 +324,8 @@ public partial class AsistenciasViewModel : ObservableObject
         {
             Asistencias.Add(asistencia);
         }
+
+        OnPropertyChanged(nameof(TextoCantidadAsistencias));
     }
 
     private bool ValidarFormulario()
@@ -186,8 +377,14 @@ public partial class AsistenciasViewModel : ObservableObject
         return ServicioAcademico
             .ObtenerAsistencias()
             .Any(asistencia =>
-                asistencia.Estudiante.Equals(EstudianteSeleccionado, StringComparison.OrdinalIgnoreCase) &&
-                asistencia.Materia.Equals(MateriaSeleccionada, StringComparison.OrdinalIgnoreCase) &&
+                (!IdEnEdicion.HasValue ||
+                 asistencia.Id != IdEnEdicion.Value) &&
+                asistencia.Estudiante.Equals(
+                    EstudianteSeleccionado,
+                    StringComparison.OrdinalIgnoreCase) &&
+                asistencia.Materia.Equals(
+                    MateriaSeleccionada,
+                    StringComparison.OrdinalIgnoreCase) &&
                 asistencia.Fecha.Date == Fecha.Date);
     }
 
