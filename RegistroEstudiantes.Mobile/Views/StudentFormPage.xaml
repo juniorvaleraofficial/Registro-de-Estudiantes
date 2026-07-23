@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.StudentFormPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F4F6F8"
+    Title="Formulario">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
+
+            <Label
+                Text="Formulario de estudiante"
+                FontSize="30"
+                FontAttributes="Bold"
+                TextColor="#111827" />
+
+            <Label
+                Text="Registro con patrón MVVM y validaciones inline debajo de cada campo."
+                FontSize="16"
+                TextColor="#6B7280" />
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <Entry
+                        Placeholder="Nombre"
+                        Text="{Binding Nombre}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding NombreError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorNombre}" />
+
+                    <Entry
+                        Placeholder="Apellido"
+                        Text="{Binding Apellido}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding ApellidoError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorApellido}" />
+
+                    <Entry
+                        Placeholder="Matrícula"
+                        Text="{Binding Matricula}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding MatriculaError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorMatricula}" />
+
+                    <Entry
+                        Placeholder="Correo electrónico"
+                        Text="{Binding Correo}"
+                        Keyboard="Email"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding CorreoError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorCorreo}" />
+
+                    <Entry
+                        Placeholder="Teléfono"
+                        Text="{Binding Telefono}"
+                        Keyboard="Telephone"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding TelefonoError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorTelefono}" />
+
+                    <Entry
+                        Placeholder="Carrera"
+                        Text="{Binding Carrera}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding CarreraError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorCarrera}" />
+
+                    <Label
+                        Text="Fecha de nacimiento"
+                        FontSize="14"
+                        TextColor="#4B5563" />
+
+                    <DatePicker
+                        Date="{Binding FechaNacimiento}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding FechaNacimientoError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorFechaNacimiento}" />
+
+                    <Label
+                        Text="Estado"
+                        FontSize="14"
+                        TextColor="#4B5563" />
+
+                    <Picker
+                        Title="Seleccione estado"
+                        ItemsSource="{Binding Estados}"
+                        SelectedItem="{Binding EstadoSeleccionado}"
+                        BackgroundColor="#F9FAFB" />
+
+                    <Label
+                        Text="{Binding EstadoError}"
+                        TextColor="#DC2626"
+                        FontSize="13"
+                        IsVisible="{Binding TieneErrorEstado}" />
+
+                    <Button
+                        Text="Guardar estudiante"
+                        Command="{Binding GuardarEstudianteCommand}"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50" />
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

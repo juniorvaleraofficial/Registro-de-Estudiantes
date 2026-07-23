@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.AsistenciasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:RegistroEstudiantes.Mobile.Views"
+    BackgroundColor="#F5F6F8"
+    Title="Asistencias">
+
+    <CollectionView
+        ItemsSource="{Binding Asistencias}"
+        SelectionMode="None">
+
+        <!-- ================================================= -->
+        <!-- ENCABEZADO Y FORMULARIO                           -->
+        <!-- ================================================= -->
+
+        <CollectionView.Header>
+
+            <VerticalStackLayout Spacing="18">
+
+                <!-- Encabezado principal -->
+
+                <Border
+                    BackgroundColor="#720C16"
+                    Padding="24,26,24,28"
+                    StrokeThickness="0">
+
+                    <VerticalStackLayout Spacing="7">
+
+                        <Label
+                            Text="CONTROL ACADÉMICO"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CharacterSpacing="1.4"
+                            TextColor="#F4D5D8" />
+
+                        <Label
+                            Text="Asistencias"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            Text="Registra, consulta, edita y elimina la asistencia de los estudiantes."
+                            FontSize="15"
+                            LineHeight="1.2"
+                            TextColor="#F8E7E9" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Tarjeta del formulario -->
+
+                <Border
+                    Margin="20,0"
+                    Padding="20"
+                    BackgroundColor="White"
+                    Stroke="#E3E5E8"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <!-- Título dinámico -->
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <VerticalStackLayout Spacing="3">
+
+                                <Label
+                                    Text="{Binding TituloFormulario}"
+                                    FontSize="22"
+                                    FontAttributes="Bold"
+                                    TextColor="#171A21" />
+
+                                <Label
+                                    Text="Selecciona los datos de la asistencia."
+                                    FontSize="14"
+                                    TextColor="#747A86" />
+
+                            </VerticalStackLayout>
+
+                            <Border
+                                Grid.Column="1"
+                                Padding="10,5"
+                                BackgroundColor="#FFF1F2"
+                                Stroke="#F5C2C7"
+                                StrokeThickness="1"
+                                IsVisible="{Binding EsModoEdicion}"
+                                VerticalOptions="Start">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20" />
+                                </Border.StrokeShape>
+
+                                <Label
+                                    Text="Editando"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#A61120" />
+
+                            </Border>
+
+                        </Grid>
+
+                        <!-- Estudiante -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Estudiante"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Border
+                                Padding="12,2"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Picker
+                                    Title="Selecciona un estudiante"
+                                    ItemsSource="{Binding EstudiantesOpciones}"
+                                    SelectedItem="{Binding EstudianteSeleccionado, Mode=TwoWay}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    TitleColor="#9AA0AA"
+                                    HorizontalOptions="Fill" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding EstudianteError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorEstudiante}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Materia -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Materia"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Border
+                                Padding="12,2"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Picker
+                                    Title="Selecciona una materia"
+                                    ItemsSource="{Binding MateriasOpciones}"
+                                    SelectedItem="{Binding MateriaSeleccionada, Mode=TwoWay}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    TitleColor="#9AA0AA"
+                                    HorizontalOptions="Fill" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding MateriaError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorMateria}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Fecha -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Fecha"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Border
+                                Padding="12,2"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <DatePicker
+                                    Date="{Binding Fecha, Mode=TwoWay}"
+                                    Format="dd/MM/yyyy"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    HorizontalOptions="Fill" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding FechaError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorFecha}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Estado -->
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="Estado de asistencia"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Border
+                                Padding="12,2"
+                                BackgroundColor="#F8F9FA"
+                                Stroke="#DDE0E5"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Picker
+                                    Title="Selecciona el estado"
+                                    ItemsSource="{Binding EstadosOpciones}"
+                                    SelectedItem="{Binding EstadoSeleccionado, Mode=TwoWay}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#171A21"
+                                    TitleColor="#9AA0AA"
+                                    HorizontalOptions="Fill" />
+
+                            </Border>
+
+                            <Label
+                                Text="{Binding EstadoError}"
+                                FontSize="13"
+                                TextColor="#C62828"
+                                IsVisible="{Binding TieneErrorEstado}" />
+
+                        </VerticalStackLayout>
+
+                        <!-- Guardar -->
+
+                        <Button
+                            Text="{Binding TextoBotonGuardar}"
+                            Command="{Binding GuardarAsistenciaCommand}"
+                            Margin="0,6,0,0"
+                            HeightRequest="52"
+                            BackgroundColor="#720C16"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12" />
+
+                        <!-- Limpiar o cancelar -->
+
+                        <Button
+                            Text="{Binding TextoBotonSecundario}"
+                            Command="{Binding LimpiarFormularioCommand}"
+                            HeightRequest="50"
+                            BackgroundColor="#ECEEF1"
+                            TextColor="#272B34"
+                            FontAttributes="Bold"
+                            CornerRadius="12" />
+
+                        <!-- Eliminar desde formulario -->
+
+                        <Button
+                            Text="Eliminar asistencia"
+                            Command="{Binding EliminarAsistenciaActualCommand}"
+                            IsVisible="{Binding MostrarBotonEliminar}"
+                            HeightRequest="50"
+                            BackgroundColor="#FFF0F1"
+                            TextColor="#B4232D"
+                            BorderColor="#E5A2A8"
+                            BorderWidth="1"
+                            FontAttributes="Bold"
+                            CornerRadius="12" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Encabezado del listado -->
+
+                <Grid
+                    Margin="20,4,20,0"
+                    ColumnDefinitions="*,Auto">
+
+                    <VerticalStackLayout Spacing="2">
+
+                        <Label
+                            Text="Asistencias registradas"
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="#171A21" />
+
+                        <Label
+                            Text="Toca una tarjeta para editar sus datos."
+                            FontSize="14"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                    <Border
+                        Grid.Column="1"
+                        Padding="10,5"
+                        BackgroundColor="#F1E7E8"
+                        StrokeThickness="0"
+                        VerticalOptions="Center">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+
+                        <Label
+                            Text="{Binding TextoCantidadAsistencias}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#720C16" />
+
+                    </Border>
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </CollectionView.Header>
+
+        <!-- ================================================= -->
+        <!-- LISTADO DE ASISTENCIAS                            -->
+        <!-- ================================================= -->
+
+        <CollectionView.ItemTemplate>
+
+            <DataTemplate>
+
+                <Border
+                    Margin="20,12,20,0"
+                    Padding="17"
+                    BackgroundColor="White"
+                    Stroke="#E0E3E7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <Border.GestureRecognizers>
+
+                        <TapGestureRecognizer
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type views:AsistenciasPage}}, Path=BindingContext.SeleccionarAsistenciaCommand}"
+                            CommandParameter="{Binding .}" />
+
+                    </Border.GestureRecognizers>
+
+                    <Grid
+                        RowDefinitions="Auto,Auto"
+                        ColumnDefinitions="*,Auto"
+                        RowSpacing="12"
+                        ColumnSpacing="12">
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="{Binding Estudiante}"
+                                FontSize="19"
+                                FontAttributes="Bold"
+                                TextColor="#171A21"
+                                LineBreakMode="TailTruncation" />
+
+                            <Label
+                                Text="{Binding Materia}"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#720C16"
+                                LineBreakMode="TailTruncation" />
+
+                            <Label
+                                Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
+                                FontSize="14"
+                                TextColor="#555C68" />
+
+                            <Border
+                                Padding="9,4"
+                                Margin="0,2,0,0"
+                                BackgroundColor="#F1E7E8"
+                                StrokeThickness="0"
+                                HorizontalOptions="Start">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20" />
+                                </Border.StrokeShape>
+
+                                <Label
+                                    Text="{Binding Estado}"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#720C16" />
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="1"
+                            Text="Eliminar"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type views:AsistenciasPage}}, Path=BindingContext.EliminarAsistenciaDesdeListaCommand}"
+                            CommandParameter="{Binding .}"
+                            Padding="13,8"
+                            MinimumHeightRequest="38"
+                            VerticalOptions="Start"
+                            BackgroundColor="#FFF0F1"
+                            TextColor="#B4232D"
+                            BorderColor="#EDB4B9"
+                            BorderWidth="1"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="10" />
+
+                        <Label
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            Text="Toca esta tarjeta para cargar la asistencia en el formulario."
+                            FontSize="12"
+                            TextColor="#8A909A" />
+
+                    </Grid>
+
+                </Border>
+
+            </DataTemplate>
+
+        </CollectionView.ItemTemplate>
+
+        <!-- Lista vacía -->
+
+        <CollectionView.EmptyView>
+
+            <Border
+                Margin="20,18,20,30"
+                Padding="24"
+                BackgroundColor="White"
+                Stroke="#E0E3E7"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="6">
+
+                    <Label
+                        Text="No hay asistencias"
+                        HorizontalTextAlignment="Center"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#343944" />
+
+                    <Label
+                        Text="Completa el formulario para registrar la primera asistencia."
+                        HorizontalTextAlignment="Center"
+                        FontSize="14"
+                        TextColor="#747A86" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </CollectionView.EmptyView>
+
+        <CollectionView.Footer>
+
+            <BoxView
+                HeightRequest="30"
+                Color="Transparent" />
+
+        </CollectionView.Footer>
+
+    </CollectionView>
+
+</ContentPage>
