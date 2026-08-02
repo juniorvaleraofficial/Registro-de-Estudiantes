@@ -33,7 +33,7 @@ public partial class AsistenciasViewModel : ObservableObject
     private bool esModoEdicion;
 
     [ObservableProperty]
-    private Guid? idEnEdicion;
+    private int? idEnEdicion;
 
     public string TituloFormulario =>
         EsModoEdicion ? "Editar asistencia" : "Nueva asistencia";
@@ -117,7 +117,7 @@ public partial class AsistenciasViewModel : ObservableObject
 
         var asistencia = new Asistencia
         {
-            Id = IdEnEdicion ?? Guid.NewGuid(),
+            Id = IdEnEdicion ?? 0,
             Estudiante =
                 EstudianteSeleccionado?.Trim() ?? string.Empty,
             Materia =

@@ -37,7 +37,7 @@ public static class ServicioAcademico
         return true;
     }
 
-    public static bool EliminarEstudiante(Guid id)
+    public static bool EliminarEstudiante(int id)
     {
         var estudiante = estudiantes.FirstOrDefault(
             estudiante => estudiante.Id == id);
@@ -79,7 +79,7 @@ public static class ServicioAcademico
         return true;
     }
 
-    public static bool EliminarMateria(Guid id)
+    public static bool EliminarMateria(int id)
     {
         var materia = materias.FirstOrDefault(
             materia => materia.Id == id);
@@ -121,7 +121,7 @@ public static class ServicioAcademico
         return true;
     }
 
-    public static bool EliminarAsistencia(Guid id)
+    public static bool EliminarAsistencia(int id)
     {
         var asistencia = asistencias.FirstOrDefault(
             asistencia => asistencia.Id == id);
@@ -164,7 +164,7 @@ public static class ServicioAcademico
         return true;
     }
 
-    public static bool EliminarCalificacion(Guid id)
+    public static bool EliminarCalificacion(int id)
     {
         var calificacion = calificaciones.FirstOrDefault(
             calificacion => calificacion.Id == id);

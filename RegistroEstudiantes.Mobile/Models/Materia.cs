@@ -1,9 +1,14 @@
-﻿namespace RegistroEstudiantes.Mobile.Models;
+﻿using SQLite;
 
+namespace RegistroEstudiantes.Mobile.Models;
+
+[Table("Materias")]
 public class Materia
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [PrimaryKey, AutoIncrement]
+    public int Id { get; set; }
 
+    [Unique]
     public string Codigo { get; set; } = string.Empty;
 
     public string Nombre { get; set; } = string.Empty;
@@ -12,5 +17,6 @@ public class Materia
 
     public int Creditos { get; set; }
 
+    [Ignore]
     public string DescripcionCorta => $"{Codigo} - {Nombre}";
 }

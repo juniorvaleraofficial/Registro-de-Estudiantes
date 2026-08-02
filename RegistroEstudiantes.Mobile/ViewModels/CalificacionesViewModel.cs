@@ -33,7 +33,7 @@ public partial class CalificacionesViewModel : ObservableObject
     private bool esModoEdicion;
 
     [ObservableProperty]
-    private Guid? idEnEdicion;
+    private int? idEnEdicion;
 
     public string TituloFormulario =>
         EsModoEdicion
@@ -125,7 +125,7 @@ public partial class CalificacionesViewModel : ObservableObject
 
         var calificacion = new Calificacion
         {
-            Id = IdEnEdicion ?? Guid.NewGuid(),
+            Id = IdEnEdicion ?? 0,
             Estudiante =
                 EstudianteSeleccionado?.Trim() ?? string.Empty,
             Materia =

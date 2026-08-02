@@ -31,7 +31,7 @@ public partial class MateriasViewModel : ObservableObject
     private bool esModoEdicion;
 
     [ObservableProperty]
-    private Guid? idEnEdicion;
+    private int? idEnEdicion;
 
     public string TituloFormulario =>
         EsModoEdicion ? "Editar materia" : "Nueva materia";
@@ -113,7 +113,7 @@ public partial class MateriasViewModel : ObservableObject
 
         var materia = new Materia
         {
-            Id = IdEnEdicion ?? Guid.NewGuid(),
+            Id = IdEnEdicion ?? 0,
             Codigo = Codigo.Trim().ToUpper(),
             Nombre = Nombre.Trim(),
             Profesor = Profesor.Trim(),

@@ -31,7 +31,7 @@ public partial class StudentsViewModel : ObservableObject
     private bool esModoEdicion;
 
     [ObservableProperty]
-    private Guid? idEnEdicion;
+    private int? idEnEdicion;
 
     public string TituloFormulario =>
         EsModoEdicion ? "Editar estudiante" : "Nuevo estudiante";
@@ -122,7 +122,7 @@ public partial class StudentsViewModel : ObservableObject
 
         var estudiante = new Estudiante
         {
-            Id = IdEnEdicion ?? Guid.NewGuid(),
+            Id = IdEnEdicion ?? 0,
             Matricula = Matricula.Trim().ToUpper(),
             Nombre = Nombre.Trim(),
             Apellido = Apellido.Trim(),
