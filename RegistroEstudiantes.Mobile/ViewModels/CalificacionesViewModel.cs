@@ -90,10 +90,13 @@ public partial class CalificacionesViewModel : ObservableObject
 
     public CalificacionesViewModel()
     {
-        ServicioAcademico.CargarDatosDePrueba();
+    }
 
-        CargarOpciones();
-        CargarCalificaciones();
+    public async Task CargarDatosAsync()
+    {
+        await ServicioAcademico.CargarDatosDePruebaAsync();
+        await CargarOpcionesAsync();
+        await CargarCalificacionesAsync();
     }
 
     [RelayCommand]
@@ -137,7 +140,8 @@ public partial class CalificacionesViewModel : ObservableObject
         if (estabaEditando)
         {
             var actualizada =
-                ServicioAcademico.ActualizarCalificacion(calificacion);
+                await ServicioAcademico.ActualizarCalificacionAsync(
+                    calificacion);
 
             if (!actualizada)
             {
@@ -154,10 +158,11 @@ public partial class CalificacionesViewModel : ObservableObject
         }
         else
         {
-            ServicioAcademico.AgregarCalificacion(calificacion);
+            await ServicioAcademico.AgregarCalificacionAsync(
+                calificacion);
         }
 
-        CargarCalificaciones();
+        await CargarCalificacionesAsync();
         LimpiarFormulario();
 
         if (SolicitarAlerta is not null)
@@ -168,7 +173,7 @@ public partial class CalificacionesViewModel : ObservableObject
                     : "Calificación guardada",
                 estabaEditando
                     ? "Los cambios de la calificación se guardaron correctamente."
-                    : "La calificación fue registrada correctamente en memoria.",
+                    : "La calificación fue guardada correctamente en la base de datos.",
                 "Aceptar");
         }
     }
@@ -219,10 +224,11 @@ public partial class CalificacionesViewModel : ObservableObject
             return;
         }
 
-        var calificacion = ServicioAcademico
-            .ObtenerCalificaciones()
-            .FirstOrDefault(
-                item => item.Id == IdEnEdicion.Value);
+        var calificaciones =
+            await ServicioAcademico.ObtenerCalificacionesAsync();
+
+        var calificacion = calificaciones.FirstOrDefault(
+            item => item.Id == IdEnEdicion.Value);
 
         if (calificacion is null)
         {
@@ -274,7 +280,8 @@ public partial class CalificacionesViewModel : ObservableObject
         }
 
         var eliminada =
-            ServicioAcademico.EliminarCalificacion(calificacion.Id);
+            await ServicioAcademico.EliminarCalificacionAsync(
+                calificacion.Id);
 
         if (!eliminada)
         {
@@ -294,7 +301,7 @@ public partial class CalificacionesViewModel : ObservableObject
             LimpiarFormulario();
         }
 
-        CargarCalificaciones();
+        await CargarCalificacionesAsync();
 
         if (SolicitarAlerta is not null)
         {
@@ -305,28 +312,36 @@ public partial class CalificacionesViewModel : ObservableObject
         }
     }
 
-    private void CargarOpciones()
+    private async Task CargarOpcionesAsync()
     {
+        var estudiantes =
+            await ServicioAcademico.ObtenerEstudiantesAsync();
+
+        var materias =
+            await ServicioAcademico.ObtenerMateriasAsync();
+
         EstudiantesOpciones.Clear();
         MateriasOpciones.Clear();
 
-        foreach (var estudiante in ServicioAcademico.ObtenerEstudiantes())
+        foreach (var estudiante in estudiantes)
         {
             EstudiantesOpciones.Add(estudiante.NombreCompleto);
         }
 
-        foreach (var materia in ServicioAcademico.ObtenerMaterias())
+        foreach (var materia in materias)
         {
             MateriasOpciones.Add(materia.DescripcionCorta);
         }
     }
 
-    private void CargarCalificaciones()
+    private async Task CargarCalificacionesAsync()
     {
+        var calificaciones =
+            await ServicioAcademico.ObtenerCalificacionesAsync();
+
         Calificaciones.Clear();
 
-        foreach (var calificacion
-                 in ServicioAcademico.ObtenerCalificaciones())
+        foreach (var calificacion in calificaciones)
         {
             Calificaciones.Add(calificacion);
         }
@@ -418,17 +433,15 @@ public partial class CalificacionesViewModel : ObservableObject
 
     private bool ExisteCalificacionRegistrada()
     {
-        return ServicioAcademico
-            .ObtenerCalificaciones()
-            .Any(calificacion =>
-                (!IdEnEdicion.HasValue ||
-                 calificacion.Id != IdEnEdicion.Value) &&
-                calificacion.Estudiante.Equals(
-                    EstudianteSeleccionado,
-                    StringComparison.OrdinalIgnoreCase) &&
-                calificacion.Materia.Equals(
-                    MateriaSeleccionada,
-                    StringComparison.OrdinalIgnoreCase));
+        return Calificaciones.Any(calificacion =>
+            (!IdEnEdicion.HasValue ||
+             calificacion.Id != IdEnEdicion.Value) &&
+            calificacion.Estudiante.Equals(
+                EstudianteSeleccionado,
+                StringComparison.OrdinalIgnoreCase) &&
+            calificacion.Materia.Equals(
+                MateriaSeleccionada,
+                StringComparison.OrdinalIgnoreCase));
     }
 
     private void LimpiarErrores()
