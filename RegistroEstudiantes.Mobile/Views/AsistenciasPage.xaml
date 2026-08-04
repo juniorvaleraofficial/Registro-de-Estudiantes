@@ -8,17 +8,9 @@
     BackgroundColor="#F5F6F8"
     Title="Asistencias">
 
-    <CollectionView
-        ItemsSource="{Binding Asistencias}"
-        SelectionMode="None">
+    <ScrollView>
 
-        <!-- ================================================= -->
-        <!-- ENCABEZADO Y FORMULARIO                           -->
-        <!-- ================================================= -->
-
-        <CollectionView.Header>
-
-            <VerticalStackLayout Spacing="18">
+        <VerticalStackLayout Spacing="18">
 
                 <!-- Encabezado principal -->
 
@@ -346,17 +338,20 @@
 
                 </Grid>
 
-            </VerticalStackLayout>
 
-        </CollectionView.Header>
 
         <!-- ================================================= -->
         <!-- LISTADO DE ASISTENCIAS                            -->
         <!-- ================================================= -->
 
-        <CollectionView.ItemTemplate>
+            <VerticalStackLayout
+                IsVisible="{Binding TieneAsistencias}"
+                Spacing="0"
+                BindableLayout.ItemsSource="{Binding Asistencias}">
 
-            <DataTemplate>
+                <BindableLayout.ItemTemplate>
+
+                    <DataTemplate>
 
                 <Border
                     Margin="20,12,20,0"
@@ -454,13 +449,14 @@
 
             </DataTemplate>
 
-        </CollectionView.ItemTemplate>
+                </BindableLayout.ItemTemplate>
+
+            </VerticalStackLayout>
 
         <!-- Lista vacía -->
 
-        <CollectionView.EmptyView>
-
             <Border
+                IsVisible="{Binding NoTieneAsistencias}"
                 Margin="20,18,20,30"
                 Padding="24"
                 BackgroundColor="White"
@@ -490,16 +486,12 @@
 
             </Border>
 
-        </CollectionView.EmptyView>
-
-        <CollectionView.Footer>
-
             <BoxView
                 HeightRequest="30"
                 Color="Transparent" />
 
-        </CollectionView.Footer>
+        </VerticalStackLayout>
 
-    </CollectionView>
+    </ScrollView>
 
 </ContentPage>
