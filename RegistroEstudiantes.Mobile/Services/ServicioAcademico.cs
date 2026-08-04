@@ -1,195 +1,244 @@
-﻿using RegistroEstudiantes.Mobile.Models;
+﻿using Microsoft.Maui.Storage;
+using RegistroEstudiantes.Mobile.Models;
+using SQLite;
 
 namespace RegistroEstudiantes.Mobile.Services;
 
 public static class ServicioAcademico
 {
-    private static readonly List<Estudiante> estudiantes = new();
-    private static readonly List<Materia> materias = new();
-    private static readonly List<Asistencia> asistencias = new();
-    private static readonly List<Calificacion> calificaciones = new();
+    private static SQLiteAsyncConnection? baseDeDatos;
+    private static bool inicializada;
+
+    // =========================================================
+    // INICIALIZACIÓN DE SQLITE
+    // =========================================================
+
+    private static async Task InicializarAsync()
+    {
+        if (inicializada)
+        {
+            return;
+        }
+
+        var rutaBaseDeDatos = Path.Combine(
+            FileSystem.AppDataDirectory,
+            "registro_estudiantes.db3");
+
+        baseDeDatos = new SQLiteAsyncConnection(rutaBaseDeDatos);
+
+        await baseDeDatos.CreateTableAsync<Estudiante>();
+        await baseDeDatos.CreateTableAsync<Materia>();
+        await baseDeDatos.CreateTableAsync<Asistencia>();
+        await baseDeDatos.CreateTableAsync<Calificacion>();
+
+        inicializada = true;
+    }
+
+    private static SQLiteAsyncConnection ObtenerConexion()
+    {
+        return baseDeDatos
+            ?? throw new InvalidOperationException(
+                "La base de datos todavía no ha sido inicializada.");
+    }
 
     // =========================================================
     // ESTUDIANTES
     // =========================================================
 
-    public static IReadOnlyList<Estudiante> ObtenerEstudiantes()
+    public static async Task<List<Estudiante>> ObtenerEstudiantesAsync()
     {
-        return estudiantes;
+        await InicializarAsync();
+
+        return await ObtenerConexion()
+            .Table<Estudiante>()
+            .OrderBy(estudiante => estudiante.Nombre)
+            .ThenBy(estudiante => estudiante.Apellido)
+            .ToListAsync();
     }
 
-    public static void AgregarEstudiante(Estudiante estudiante)
+    public static async Task<int> AgregarEstudianteAsync(
+        Estudiante estudiante)
     {
-        estudiantes.Add(estudiante);
+        await InicializarAsync();
+
+        return await ObtenerConexion().InsertAsync(estudiante);
     }
 
-    public static bool ActualizarEstudiante(Estudiante estudianteActualizado)
+    public static async Task<bool> ActualizarEstudianteAsync(
+        Estudiante estudianteActualizado)
     {
-        var indice = estudiantes.FindIndex(
-            estudiante => estudiante.Id == estudianteActualizado.Id);
+        await InicializarAsync();
 
-        if (indice < 0)
-        {
-            return false;
-        }
+        var filasActualizadas = await ObtenerConexion()
+            .UpdateAsync(estudianteActualizado);
 
-        estudiantes[indice] = estudianteActualizado;
-        return true;
+        return filasActualizadas > 0;
     }
 
-    public static bool EliminarEstudiante(int id)
+    public static async Task<bool> EliminarEstudianteAsync(int id)
     {
-        var estudiante = estudiantes.FirstOrDefault(
-            estudiante => estudiante.Id == id);
+        await InicializarAsync();
 
-        if (estudiante is null)
-        {
-            return false;
-        }
+        var filasEliminadas = await ObtenerConexion()
+            .DeleteAsync<Estudiante>(id);
 
-        estudiantes.Remove(estudiante);
-        return true;
+        return filasEliminadas > 0;
     }
 
     // =========================================================
     // MATERIAS
     // =========================================================
 
-    public static IReadOnlyList<Materia> ObtenerMaterias()
+    public static async Task<List<Materia>> ObtenerMateriasAsync()
     {
-        return materias;
+        await InicializarAsync();
+
+        return await ObtenerConexion()
+            .Table<Materia>()
+            .OrderBy(materia => materia.Nombre)
+            .ToListAsync();
     }
 
-    public static void AgregarMateria(Materia materia)
+    public static async Task<int> AgregarMateriaAsync(Materia materia)
     {
-        materias.Add(materia);
+        await InicializarAsync();
+
+        return await ObtenerConexion().InsertAsync(materia);
     }
 
-    public static bool ActualizarMateria(Materia materiaActualizada)
+    public static async Task<bool> ActualizarMateriaAsync(
+        Materia materiaActualizada)
     {
-        var indice = materias.FindIndex(
-            materia => materia.Id == materiaActualizada.Id);
+        await InicializarAsync();
 
-        if (indice < 0)
-        {
-            return false;
-        }
+        var filasActualizadas = await ObtenerConexion()
+            .UpdateAsync(materiaActualizada);
 
-        materias[indice] = materiaActualizada;
-        return true;
+        return filasActualizadas > 0;
     }
 
-    public static bool EliminarMateria(int id)
+    public static async Task<bool> EliminarMateriaAsync(int id)
     {
-        var materia = materias.FirstOrDefault(
-            materia => materia.Id == id);
+        await InicializarAsync();
 
-        if (materia is null)
-        {
-            return false;
-        }
+        var filasEliminadas = await ObtenerConexion()
+            .DeleteAsync<Materia>(id);
 
-        materias.Remove(materia);
-        return true;
+        return filasEliminadas > 0;
     }
 
     // =========================================================
     // ASISTENCIAS
     // =========================================================
 
-    public static IReadOnlyList<Asistencia> ObtenerAsistencias()
+    public static async Task<List<Asistencia>> ObtenerAsistenciasAsync()
     {
-        return asistencias;
+        await InicializarAsync();
+
+        return await ObtenerConexion()
+            .Table<Asistencia>()
+            .OrderByDescending(asistencia => asistencia.Fecha)
+            .ToListAsync();
     }
 
-    public static void AgregarAsistencia(Asistencia asistencia)
+    public static async Task<int> AgregarAsistenciaAsync(
+        Asistencia asistencia)
     {
-        asistencias.Add(asistencia);
+        await InicializarAsync();
+
+        return await ObtenerConexion().InsertAsync(asistencia);
     }
 
-    public static bool ActualizarAsistencia(Asistencia asistenciaActualizada)
+    public static async Task<bool> ActualizarAsistenciaAsync(
+        Asistencia asistenciaActualizada)
     {
-        var indice = asistencias.FindIndex(
-            asistencia => asistencia.Id == asistenciaActualizada.Id);
+        await InicializarAsync();
 
-        if (indice < 0)
-        {
-            return false;
-        }
+        var filasActualizadas = await ObtenerConexion()
+            .UpdateAsync(asistenciaActualizada);
 
-        asistencias[indice] = asistenciaActualizada;
-        return true;
+        return filasActualizadas > 0;
     }
 
-    public static bool EliminarAsistencia(int id)
+    public static async Task<bool> EliminarAsistenciaAsync(int id)
     {
-        var asistencia = asistencias.FirstOrDefault(
-            asistencia => asistencia.Id == id);
+        await InicializarAsync();
 
-        if (asistencia is null)
-        {
-            return false;
-        }
+        var filasEliminadas = await ObtenerConexion()
+            .DeleteAsync<Asistencia>(id);
 
-        asistencias.Remove(asistencia);
-        return true;
+        return filasEliminadas > 0;
     }
 
     // =========================================================
     // CALIFICACIONES
     // =========================================================
 
-    public static IReadOnlyList<Calificacion> ObtenerCalificaciones()
+    public static async Task<List<Calificacion>>
+        ObtenerCalificacionesAsync()
     {
-        return calificaciones;
+        await InicializarAsync();
+
+        return await ObtenerConexion()
+            .Table<Calificacion>()
+            .OrderBy(calificacion => calificacion.Estudiante)
+            .ThenBy(calificacion => calificacion.Materia)
+            .ToListAsync();
     }
 
-    public static void AgregarCalificacion(Calificacion calificacion)
+    public static async Task<int> AgregarCalificacionAsync(
+        Calificacion calificacion)
     {
-        calificaciones.Add(calificacion);
+        await InicializarAsync();
+
+        return await ObtenerConexion().InsertAsync(calificacion);
     }
 
-    public static bool ActualizarCalificacion(
+    public static async Task<bool> ActualizarCalificacionAsync(
         Calificacion calificacionActualizada)
     {
-        var indice = calificaciones.FindIndex(
-            calificacion => calificacion.Id == calificacionActualizada.Id);
+        await InicializarAsync();
 
-        if (indice < 0)
-        {
-            return false;
-        }
+        var filasActualizadas = await ObtenerConexion()
+            .UpdateAsync(calificacionActualizada);
 
-        calificaciones[indice] = calificacionActualizada;
-        return true;
+        return filasActualizadas > 0;
     }
 
-    public static bool EliminarCalificacion(int id)
+    public static async Task<bool> EliminarCalificacionAsync(int id)
     {
-        var calificacion = calificaciones.FirstOrDefault(
-            calificacion => calificacion.Id == id);
+        await InicializarAsync();
 
-        if (calificacion is null)
-        {
-            return false;
-        }
+        var filasEliminadas = await ObtenerConexion()
+            .DeleteAsync<Calificacion>(id);
 
-        calificaciones.Remove(calificacion);
-        return true;
+        return filasEliminadas > 0;
     }
 
     // =========================================================
     // DATOS INICIALES PARA PRUEBAS
     // =========================================================
 
-    public static void CargarDatosDePrueba()
+    public static async Task CargarDatosDePruebaAsync()
     {
-        if (estudiantes.Count > 0 || materias.Count > 0)
+        await InicializarAsync();
+
+        var conexion = ObtenerConexion();
+
+        var cantidadEstudiantes = await conexion
+            .Table<Estudiante>()
+            .CountAsync();
+
+        var cantidadMaterias = await conexion
+            .Table<Materia>()
+            .CountAsync();
+
+        if (cantidadEstudiantes > 0 || cantidadMaterias > 0)
         {
             return;
         }
 
-        estudiantes.Add(new Estudiante
+        await conexion.InsertAsync(new Estudiante
         {
             Matricula = "MT-2023-00518",
             Nombre = "Junior",
@@ -198,7 +247,7 @@ public static class ServicioAcademico
             Telefono = "809-000-0000"
         });
 
-        estudiantes.Add(new Estudiante
+        await conexion.InsertAsync(new Estudiante
         {
             Matricula = "SD-18-11014",
             Nombre = "Yisel",
@@ -207,7 +256,7 @@ public static class ServicioAcademico
             Telefono = "809-000-0001"
         });
 
-        materias.Add(new Materia
+        await conexion.InsertAsync(new Materia
         {
             Codigo = "INF-4316",
             Nombre = "Programación de Aplicaciones Móviles",
