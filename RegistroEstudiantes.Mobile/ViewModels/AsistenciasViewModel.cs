@@ -18,6 +18,12 @@ public partial class AsistenciasViewModel : ObservableObject
             ? "1 registro"
             : $"{Asistencias.Count} registros";
 
+    public bool TieneAsistencias =>
+        Asistencias.Count > 0;
+
+    public bool NoTieneAsistencias =>
+        !TieneAsistencias;
+
     public event Func<string, string, string, Task>? SolicitarAlerta;
 
     public event Func<string, string, string, string, Task<bool>>?
@@ -84,10 +90,13 @@ public partial class AsistenciasViewModel : ObservableObject
 
     public AsistenciasViewModel()
     {
-        ServicioAcademico.CargarDatosDePrueba();
+    }
 
-        CargarOpciones();
-        CargarAsistencias();
+    public async Task CargarDatosAsync()
+    {
+        await ServicioAcademico.CargarDatosDePruebaAsync();
+        await CargarOpcionesAsync();
+        await CargarAsistenciasAsync();
     }
 
     [RelayCommand]
@@ -130,7 +139,8 @@ public partial class AsistenciasViewModel : ObservableObject
         if (estabaEditando)
         {
             var actualizada =
-                ServicioAcademico.ActualizarAsistencia(asistencia);
+                await ServicioAcademico.ActualizarAsistenciaAsync(
+                    asistencia);
 
             if (!actualizada)
             {
@@ -147,10 +157,11 @@ public partial class AsistenciasViewModel : ObservableObject
         }
         else
         {
-            ServicioAcademico.AgregarAsistencia(asistencia);
+            await ServicioAcademico.AgregarAsistenciaAsync(
+                asistencia);
         }
 
-        CargarAsistencias();
+        await CargarAsistenciasAsync();
         LimpiarFormulario();
 
         if (SolicitarAlerta is not null)
@@ -161,7 +172,7 @@ public partial class AsistenciasViewModel : ObservableObject
                     : "Asistencia guardada",
                 estabaEditando
                     ? "Los cambios de la asistencia se guardaron correctamente."
-                    : "La asistencia fue registrada correctamente en memoria.",
+                    : "La asistencia fue guardada correctamente en la base de datos.",
                 "Aceptar");
         }
     }
@@ -210,9 +221,11 @@ public partial class AsistenciasViewModel : ObservableObject
             return;
         }
 
-        var asistencia = ServicioAcademico
-            .ObtenerAsistencias()
-            .FirstOrDefault(item => item.Id == IdEnEdicion.Value);
+        var asistencias =
+            await ServicioAcademico.ObtenerAsistenciasAsync();
+
+        var asistencia = asistencias.FirstOrDefault(
+            item => item.Id == IdEnEdicion.Value);
 
         if (asistencia is null)
         {
@@ -264,7 +277,8 @@ public partial class AsistenciasViewModel : ObservableObject
         }
 
         var eliminada =
-            ServicioAcademico.EliminarAsistencia(asistencia.Id);
+            await ServicioAcademico.EliminarAsistenciaAsync(
+                asistencia.Id);
 
         if (!eliminada)
         {
@@ -284,7 +298,7 @@ public partial class AsistenciasViewModel : ObservableObject
             LimpiarFormulario();
         }
 
-        CargarAsistencias();
+        await CargarAsistenciasAsync();
 
         if (SolicitarAlerta is not null)
         {
@@ -295,18 +309,24 @@ public partial class AsistenciasViewModel : ObservableObject
         }
     }
 
-    private void CargarOpciones()
+    private async Task CargarOpcionesAsync()
     {
+        var estudiantes =
+            await ServicioAcademico.ObtenerEstudiantesAsync();
+
+        var materias =
+            await ServicioAcademico.ObtenerMateriasAsync();
+
         EstudiantesOpciones.Clear();
         MateriasOpciones.Clear();
         EstadosOpciones.Clear();
 
-        foreach (var estudiante in ServicioAcademico.ObtenerEstudiantes())
+        foreach (var estudiante in estudiantes)
         {
             EstudiantesOpciones.Add(estudiante.NombreCompleto);
         }
 
-        foreach (var materia in ServicioAcademico.ObtenerMaterias())
+        foreach (var materia in materias)
         {
             MateriasOpciones.Add(materia.DescripcionCorta);
         }
@@ -316,16 +336,21 @@ public partial class AsistenciasViewModel : ObservableObject
         EstadosOpciones.Add("Excusa");
     }
 
-    private void CargarAsistencias()
+    private async Task CargarAsistenciasAsync()
     {
+        var asistencias =
+            await ServicioAcademico.ObtenerAsistenciasAsync();
+
         Asistencias.Clear();
 
-        foreach (var asistencia in ServicioAcademico.ObtenerAsistencias())
+        foreach (var asistencia in asistencias)
         {
             Asistencias.Add(asistencia);
         }
 
         OnPropertyChanged(nameof(TextoCantidadAsistencias));
+        OnPropertyChanged(nameof(TieneAsistencias));
+        OnPropertyChanged(nameof(NoTieneAsistencias));
     }
 
     private bool ValidarFormulario()
@@ -374,18 +399,16 @@ public partial class AsistenciasViewModel : ObservableObject
 
     private bool ExisteAsistenciaRegistrada()
     {
-        return ServicioAcademico
-            .ObtenerAsistencias()
-            .Any(asistencia =>
-                (!IdEnEdicion.HasValue ||
-                 asistencia.Id != IdEnEdicion.Value) &&
-                asistencia.Estudiante.Equals(
-                    EstudianteSeleccionado,
-                    StringComparison.OrdinalIgnoreCase) &&
-                asistencia.Materia.Equals(
-                    MateriaSeleccionada,
-                    StringComparison.OrdinalIgnoreCase) &&
-                asistencia.Fecha.Date == Fecha.Date);
+        return Asistencias.Any(asistencia =>
+            (!IdEnEdicion.HasValue ||
+             asistencia.Id != IdEnEdicion.Value) &&
+            asistencia.Estudiante.Equals(
+                EstudianteSeleccionado,
+                StringComparison.OrdinalIgnoreCase) &&
+            asistencia.Materia.Equals(
+                MateriaSeleccionada,
+                StringComparison.OrdinalIgnoreCase) &&
+            asistencia.Fecha.Date == Fecha.Date);
     }
 
     private void LimpiarErrores()

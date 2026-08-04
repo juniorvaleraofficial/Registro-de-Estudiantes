@@ -37,4 +37,11 @@ public partial class AsistenciasPage : ContentPage
                 botonCancelar);
         };
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await viewModel.CargarDatosAsync();
+    }
 }
