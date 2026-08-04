@@ -91,8 +91,12 @@ public partial class StudentsViewModel : ObservableObject
 
     public StudentsViewModel()
     {
-        ServicioAcademico.CargarDatosDePrueba();
-        CargarEstudiantes();
+    }
+
+    public async Task CargarDatosAsync()
+    {
+        await ServicioAcademico.CargarDatosDePruebaAsync();
+        await CargarEstudiantesAsync();
     }
 
     [RelayCommand]
@@ -133,7 +137,8 @@ public partial class StudentsViewModel : ObservableObject
         if (estabaEditando)
         {
             var actualizado =
-                ServicioAcademico.ActualizarEstudiante(estudiante);
+                await ServicioAcademico.ActualizarEstudianteAsync(
+                    estudiante);
 
             if (!actualizado)
             {
@@ -150,10 +155,11 @@ public partial class StudentsViewModel : ObservableObject
         }
         else
         {
-            ServicioAcademico.AgregarEstudiante(estudiante);
+            await ServicioAcademico.AgregarEstudianteAsync(
+                estudiante);
         }
 
-        CargarEstudiantes();
+        await CargarEstudiantesAsync();
         LimpiarFormulario();
 
         if (SolicitarAlerta is not null)
@@ -164,7 +170,7 @@ public partial class StudentsViewModel : ObservableObject
                     : "Estudiante guardado",
                 estabaEditando
                     ? "Los cambios del estudiante se guardaron correctamente."
-                    : "El estudiante fue registrado correctamente en memoria.",
+                    : "El estudiante fue guardado correctamente en la base de datos.",
                 "Aceptar");
         }
     }
@@ -215,9 +221,11 @@ public partial class StudentsViewModel : ObservableObject
             return;
         }
 
-        var estudiante = ServicioAcademico
-            .ObtenerEstudiantes()
-            .FirstOrDefault(item => item.Id == IdEnEdicion.Value);
+        var estudiantes =
+            await ServicioAcademico.ObtenerEstudiantesAsync();
+
+        var estudiante = estudiantes.FirstOrDefault(
+            item => item.Id == IdEnEdicion.Value);
 
         if (estudiante is null)
         {
@@ -268,7 +276,8 @@ public partial class StudentsViewModel : ObservableObject
         }
 
         var eliminado =
-            ServicioAcademico.EliminarEstudiante(estudiante.Id);
+            await ServicioAcademico.EliminarEstudianteAsync(
+                estudiante.Id);
 
         if (!eliminado)
         {
@@ -288,7 +297,7 @@ public partial class StudentsViewModel : ObservableObject
             LimpiarFormulario();
         }
 
-        CargarEstudiantes();
+        await CargarEstudiantesAsync();
 
         if (SolicitarAlerta is not null)
         {
@@ -299,11 +308,14 @@ public partial class StudentsViewModel : ObservableObject
         }
     }
 
-    private void CargarEstudiantes()
+    private async Task CargarEstudiantesAsync()
     {
+        var estudiantes =
+            await ServicioAcademico.ObtenerEstudiantesAsync();
+
         Estudiantes.Clear();
 
-        foreach (var estudiante in ServicioAcademico.ObtenerEstudiantes())
+        foreach (var estudiante in estudiantes)
         {
             Estudiantes.Add(estudiante);
         }
@@ -402,13 +414,11 @@ public partial class StudentsViewModel : ObservableObject
 
     private bool ExisteMatricula(string matricula)
     {
-        return ServicioAcademico
-            .ObtenerEstudiantes()
-            .Any(estudiante =>
-                estudiante.Id != IdEnEdicion &&
-                estudiante.Matricula.Equals(
-                    matricula.Trim(),
-                    StringComparison.OrdinalIgnoreCase));
+        return Estudiantes.Any(estudiante =>
+            estudiante.Id != IdEnEdicion &&
+            estudiante.Matricula.Equals(
+                matricula.Trim(),
+                StringComparison.OrdinalIgnoreCase));
     }
 
     private void LimpiarErrores()

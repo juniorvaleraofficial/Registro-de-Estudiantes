@@ -37,4 +37,11 @@ public partial class StudentsPage : ContentPage
                 botonCancelar);
         };
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await viewModel.CargarDatosAsync();
+    }
 }

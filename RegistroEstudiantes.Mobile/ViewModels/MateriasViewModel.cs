@@ -82,8 +82,6 @@ public partial class MateriasViewModel : ObservableObject
 
     public MateriasViewModel()
     {
-        ServicioAcademico.CargarDatosDePrueba();
-        CargarMaterias();
     }
 
     [RelayCommand]
@@ -123,7 +121,7 @@ public partial class MateriasViewModel : ObservableObject
         if (estabaEditando)
         {
             var actualizada =
-                ServicioAcademico.ActualizarMateria(materia);
+                await ServicioAcademico.ActualizarMateriaAsync(materia);
 
             if (!actualizada)
             {
@@ -140,10 +138,10 @@ public partial class MateriasViewModel : ObservableObject
         }
         else
         {
-            ServicioAcademico.AgregarMateria(materia);
+            await ServicioAcademico.AgregarMateriaAsync(materia);
         }
 
-        CargarMaterias();
+        await CargarMateriasAsync();
         LimpiarFormulario();
 
         if (SolicitarAlerta is not null)
@@ -154,7 +152,7 @@ public partial class MateriasViewModel : ObservableObject
                     : "Materia guardada",
                 estabaEditando
                     ? "Los cambios de la materia se guardaron correctamente."
-                    : "La materia fue registrada correctamente en memoria.",
+                    : "La materia fue guardada correctamente en la base de datos.",
                 "Aceptar");
         }
     }
@@ -203,9 +201,11 @@ public partial class MateriasViewModel : ObservableObject
             return;
         }
 
-        var materia = ServicioAcademico
-            .ObtenerMaterias()
-            .FirstOrDefault(item => item.Id == IdEnEdicion.Value);
+        var materias =
+            await ServicioAcademico.ObtenerMateriasAsync();
+
+        var materia = materias.FirstOrDefault(
+            item => item.Id == IdEnEdicion.Value);
 
         if (materia is null)
         {
@@ -256,7 +256,7 @@ public partial class MateriasViewModel : ObservableObject
         }
 
         var eliminada =
-            ServicioAcademico.EliminarMateria(materia.Id);
+            await ServicioAcademico.EliminarMateriaAsync(materia.Id);
 
         if (!eliminada)
         {
@@ -276,7 +276,7 @@ public partial class MateriasViewModel : ObservableObject
             LimpiarFormulario();
         }
 
-        CargarMaterias();
+        await CargarMateriasAsync();
 
         if (SolicitarAlerta is not null)
         {
@@ -287,11 +287,16 @@ public partial class MateriasViewModel : ObservableObject
         }
     }
 
-    private void CargarMaterias()
+    public async Task CargarMateriasAsync()
     {
+        await ServicioAcademico.CargarDatosDePruebaAsync();
+
+        var materias =
+            await ServicioAcademico.ObtenerMateriasAsync();
+
         Materias.Clear();
 
-        foreach (var materia in ServicioAcademico.ObtenerMaterias())
+        foreach (var materia in materias)
         {
             Materias.Add(materia);
         }
@@ -388,13 +393,11 @@ public partial class MateriasViewModel : ObservableObject
 
     private bool ExisteCodigoMateria(string codigo)
     {
-        return ServicioAcademico
-            .ObtenerMaterias()
-            .Any(materia =>
-                materia.Id != IdEnEdicion &&
-                materia.Codigo.Equals(
-                    codigo.Trim(),
-                    StringComparison.OrdinalIgnoreCase));
+        return Materias.Any(materia =>
+            materia.Id != IdEnEdicion &&
+            materia.Codigo.Equals(
+                codigo.Trim(),
+                StringComparison.OrdinalIgnoreCase));
     }
 
     private void LimpiarErrores()

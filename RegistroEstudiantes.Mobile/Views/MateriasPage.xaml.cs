@@ -37,4 +37,11 @@ public partial class MateriasPage : ContentPage
                 botonCancelar);
         };
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await viewModel.CargarMateriasAsync();
+    }
 }
