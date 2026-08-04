@@ -43,5 +43,9 @@ public partial class AsistenciasPage : ContentPage
         base.OnAppearing();
 
         await viewModel.CargarDatosAsync();
+        await ContenidoScrollView.ScrollToAsync(
+            0,
+            0,
+            false);
     }
 }
