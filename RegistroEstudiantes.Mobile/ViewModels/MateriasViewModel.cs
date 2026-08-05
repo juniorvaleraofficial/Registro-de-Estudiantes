@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RegistroEstudiantes.Mobile.Models;
 using RegistroEstudiantes.Mobile.Services;
+using SQLite;
 
 namespace RegistroEstudiantes.Mobile.ViewModels;
 
@@ -118,27 +119,41 @@ public partial class MateriasViewModel : ObservableObject
             Creditos = int.Parse(CreditosTexto.Trim())
         };
 
-        if (estabaEditando)
+        try
         {
-            var actualizada =
-                await ServicioAcademico.ActualizarMateriaAsync(materia);
-
-            if (!actualizada)
+            if (estabaEditando)
             {
-                if (SolicitarAlerta is not null)
-                {
-                    await SolicitarAlerta(
-                        "No se pudo actualizar",
-                        "La materia seleccionada ya no se encuentra disponible.",
-                        "Aceptar");
-                }
+                var actualizada =
+                    await ServicioAcademico.ActualizarMateriaAsync(
+                        materia);
 
-                return;
+                if (!actualizada)
+                {
+                    if (SolicitarAlerta is not null)
+                    {
+                        await SolicitarAlerta(
+                            "No se pudo actualizar",
+                            "La materia seleccionada ya no se encuentra disponible.",
+                            "Aceptar");
+                    }
+
+                    return;
+                }
+            }
+            else
+            {
+                await ServicioAcademico.AgregarMateriaAsync(
+                    materia);
             }
         }
-        else
+        catch (SQLiteException excepcion)
+            when (excepcion.Result == SQLite3.Result.Constraint)
         {
-            await ServicioAcademico.AgregarMateriaAsync(materia);
+            CodigoError =
+                "Ya existe una materia con este código.";
+
+            TieneErrorCodigo = true;
+            return;
         }
 
         await CargarMateriasAsync();

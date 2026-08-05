@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RegistroEstudiantes.Mobile.Models;
 using RegistroEstudiantes.Mobile.Services;
+using SQLite;
 
 namespace RegistroEstudiantes.Mobile.ViewModels;
 
@@ -134,29 +135,41 @@ public partial class StudentsViewModel : ObservableObject
             Telefono = Telefono.Trim()
         };
 
-        if (estabaEditando)
+        try
         {
-            var actualizado =
-                await ServicioAcademico.ActualizarEstudianteAsync(
-                    estudiante);
-
-            if (!actualizado)
+            if (estabaEditando)
             {
-                if (SolicitarAlerta is not null)
-                {
-                    await SolicitarAlerta(
-                        "No se pudo actualizar",
-                        "El estudiante seleccionado ya no se encuentra disponible.",
-                        "Aceptar");
-                }
+                var actualizado =
+                    await ServicioAcademico.ActualizarEstudianteAsync(
+                        estudiante);
 
-                return;
+                if (!actualizado)
+                {
+                    if (SolicitarAlerta is not null)
+                    {
+                        await SolicitarAlerta(
+                            "No se pudo actualizar",
+                            "El estudiante seleccionado ya no se encuentra disponible.",
+                            "Aceptar");
+                    }
+
+                    return;
+                }
+            }
+            else
+            {
+                await ServicioAcademico.AgregarEstudianteAsync(
+                    estudiante);
             }
         }
-        else
+        catch (SQLiteException excepcion)
+            when (excepcion.Result == SQLite3.Result.Constraint)
         {
-            await ServicioAcademico.AgregarEstudianteAsync(
-                estudiante);
+            MatriculaError =
+                "Ya existe un estudiante con esta matrícula.";
+
+            TieneErrorMatricula = true;
+            return;
         }
 
         await CargarEstudiantesAsync();
