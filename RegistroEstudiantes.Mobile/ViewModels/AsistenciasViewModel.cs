@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RegistroEstudiantes.Mobile.Models;
 using RegistroEstudiantes.Mobile.Services;
+using SQLite;
 
 namespace RegistroEstudiantes.Mobile.ViewModels;
 
@@ -136,29 +137,41 @@ public partial class AsistenciasViewModel : ObservableObject
                 EstadoSeleccionado?.Trim() ?? string.Empty
         };
 
-        if (estabaEditando)
+        try
         {
-            var actualizada =
-                await ServicioAcademico.ActualizarAsistenciaAsync(
-                    asistencia);
-
-            if (!actualizada)
+            if (estabaEditando)
             {
-                if (SolicitarAlerta is not null)
-                {
-                    await SolicitarAlerta(
-                        "No se pudo actualizar",
-                        "La asistencia seleccionada ya no se encuentra disponible.",
-                        "Aceptar");
-                }
+                var actualizada =
+                    await ServicioAcademico.ActualizarAsistenciaAsync(
+                        asistencia);
 
-                return;
+                if (!actualizada)
+                {
+                    if (SolicitarAlerta is not null)
+                    {
+                        await SolicitarAlerta(
+                            "No se pudo actualizar",
+                            "La asistencia seleccionada ya no se encuentra disponible.",
+                            "Aceptar");
+                    }
+
+                    return;
+                }
+            }
+            else
+            {
+                await ServicioAcademico.AgregarAsistenciaAsync(
+                    asistencia);
             }
         }
-        else
+        catch (SQLiteException excepcion)
+            when (excepcion.Result == SQLite3.Result.Constraint)
         {
-            await ServicioAcademico.AgregarAsistenciaAsync(
-                asistencia);
+            EstadoError =
+                "Ya existe una asistencia para este estudiante, materia y fecha.";
+
+            TieneErrorEstado = true;
+            return;
         }
 
         await CargarAsistenciasAsync();

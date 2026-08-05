@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RegistroEstudiantes.Mobile.Models;
 using RegistroEstudiantes.Mobile.Services;
+using SQLite;
 
 namespace RegistroEstudiantes.Mobile.ViewModels;
 
@@ -137,29 +138,41 @@ public partial class CalificacionesViewModel : ObservableObject
             Observacion = Observacion.Trim()
         };
 
-        if (estabaEditando)
+        try
         {
-            var actualizada =
-                await ServicioAcademico.ActualizarCalificacionAsync(
-                    calificacion);
-
-            if (!actualizada)
+            if (estabaEditando)
             {
-                if (SolicitarAlerta is not null)
-                {
-                    await SolicitarAlerta(
-                        "No se pudo actualizar",
-                        "La calificación seleccionada ya no se encuentra disponible.",
-                        "Aceptar");
-                }
+                var actualizada =
+                    await ServicioAcademico.ActualizarCalificacionAsync(
+                        calificacion);
 
-                return;
+                if (!actualizada)
+                {
+                    if (SolicitarAlerta is not null)
+                    {
+                        await SolicitarAlerta(
+                            "No se pudo actualizar",
+                            "La calificación seleccionada ya no se encuentra disponible.",
+                            "Aceptar");
+                    }
+
+                    return;
+                }
+            }
+            else
+            {
+                await ServicioAcademico.AgregarCalificacionAsync(
+                    calificacion);
             }
         }
-        else
+        catch (SQLiteException excepcion)
+            when (excepcion.Result == SQLite3.Result.Constraint)
         {
-            await ServicioAcademico.AgregarCalificacionAsync(
-                calificacion);
+            NotaError =
+                "Ya existe una calificación para este estudiante y esta materia.";
+
+            TieneErrorNota = true;
+            return;
         }
 
         await CargarCalificacionesAsync();
