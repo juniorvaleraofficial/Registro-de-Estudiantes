@@ -12,10 +12,37 @@ public partial class StudentsViewModel : ObservableObject
 {
     public ObservableCollection<Estudiante> Estudiantes { get; } = new();
 
-    public string TextoCantidadEstudiantes =>
-        Estudiantes.Count == 1
-            ? "1 registro"
-            : $"{Estudiantes.Count} registros";
+    private readonly List<Estudiante> estudiantesCompletos = new();
+
+    public string TextoCantidadEstudiantes
+    {
+        get
+        {
+            if (TieneBusquedaActiva)
+            {
+                return Estudiantes.Count == 1
+                    ? "1 resultado"
+                    : $"{Estudiantes.Count} resultados";
+            }
+
+            return Estudiantes.Count == 1
+                ? "1 registro"
+                : $"{Estudiantes.Count} registros";
+        }
+    }
+
+    public bool TieneBusquedaActiva =>
+        !string.IsNullOrWhiteSpace(TextoBusqueda);
+
+    public string TituloListaVacia =>
+        TieneBusquedaActiva
+            ? "Sin coincidencias"
+            : "No hay estudiantes";
+
+    public string MensajeListaVacia =>
+        TieneBusquedaActiva
+            ? "Prueba con otro nombre, apellido, matrícula o carrera."
+            : "Completa el formulario para registrar el primer estudiante.";
 
     public event Func<string, string, string, Task>? SolicitarAlerta;
 
@@ -89,6 +116,13 @@ public partial class StudentsViewModel : ObservableObject
 
     [ObservableProperty]
     private bool tieneErrorTelefono;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TieneBusquedaActiva))]
+    [NotifyPropertyChangedFor(nameof(TextoCantidadEstudiantes))]
+    [NotifyPropertyChangedFor(nameof(TituloListaVacia))]
+    [NotifyPropertyChangedFor(nameof(MensajeListaVacia))]
+    private string textoBusqueda = string.Empty;
 
     public StudentsViewModel()
     {
@@ -326,14 +360,58 @@ public partial class StudentsViewModel : ObservableObject
         var estudiantes =
             await ServicioAcademico.ObtenerEstudiantesAsync();
 
+        estudiantesCompletos.Clear();
+        estudiantesCompletos.AddRange(estudiantes);
+
+        AplicarFiltroEstudiantes();
+    }
+
+    private void AplicarFiltroEstudiantes()
+    {
+        var texto = TextoBusqueda.Trim();
+
+        var resultados = string.IsNullOrWhiteSpace(texto)
+            ? estudiantesCompletos
+            : estudiantesCompletos
+                .Where(estudiante =>
+                    estudiante.Nombre.Contains(
+                        texto,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    estudiante.Apellido.Contains(
+                        texto,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    estudiante.NombreCompleto.Contains(
+                        texto,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    estudiante.Matricula.Contains(
+                        texto,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    estudiante.Carrera.Contains(
+                        texto,
+                        StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
         Estudiantes.Clear();
 
-        foreach (var estudiante in estudiantes)
+        foreach (var estudiante in resultados)
         {
             Estudiantes.Add(estudiante);
         }
 
         OnPropertyChanged(nameof(TextoCantidadEstudiantes));
+        OnPropertyChanged(nameof(TituloListaVacia));
+        OnPropertyChanged(nameof(MensajeListaVacia));
+    }
+
+    [RelayCommand]
+    private void LimpiarBusqueda()
+    {
+        TextoBusqueda = string.Empty;
+    }
+
+    partial void OnTextoBusquedaChanged(string value)
+    {
+        AplicarFiltroEstudiantes();
     }
 
     private bool ValidarFormulario()
@@ -427,7 +505,7 @@ public partial class StudentsViewModel : ObservableObject
 
     private bool ExisteMatricula(string matricula)
     {
-        return Estudiantes.Any(estudiante =>
+        return estudiantesCompletos.Any(estudiante =>
             estudiante.Id != IdEnEdicion &&
             estudiante.Matricula.Equals(
                 matricula.Trim(),

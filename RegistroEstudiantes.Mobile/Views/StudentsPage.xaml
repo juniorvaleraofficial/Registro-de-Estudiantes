@@ -131,8 +131,7 @@
                                 <Entry
                                     Placeholder="Ejemplo: MT-2023-00518"
                                     Text="{Binding Matricula, Mode=TwoWay}"
-                                    ClearButtonVisibility="WhileEditing"
-                                    BackgroundColor="Transparent"
+                                        BackgroundColor="Transparent"
                                     TextColor="#171A21"
                                     PlaceholderColor="#9AA0AA" />
 
@@ -340,6 +339,62 @@
 
                 </Border>
 
+                <!-- Buscador de estudiantes -->
+
+                <Border
+                    Margin="20,0"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E0E3E7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label
+                            Text="Buscar estudiantes"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            TextColor="#343944" />
+
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            ColumnSpacing="10">
+
+                            <SearchBar
+                                Placeholder="Nombre, apellido, matrícula o carrera"
+                                Text="{Binding TextoBusqueda, Mode=TwoWay}"
+                                BackgroundColor="#F8F9FA"
+                                PlaceholderColor="#8A909A"
+                                TextColor="#171A21" />
+
+                            <Button
+                                Grid.Column="1"
+                                Text="Limpiar"
+                                Command="{Binding LimpiarBusquedaCommand}"
+                                IsVisible="{Binding TieneBusquedaActiva}"
+                                Padding="14,0"
+                                HeightRequest="50"
+                                VerticalOptions="Center"
+                                BackgroundColor="#F1E7E8"
+                                TextColor="#720C16"
+                                FontAttributes="Bold"
+                                CornerRadius="12" />
+
+                        </Grid>
+
+                        <Label
+                            Text="Los resultados se actualizan mientras escribes."
+                            FontSize="12"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
                 <!-- Encabezado del listado -->
 
                 <Grid
@@ -496,14 +551,14 @@
                 <VerticalStackLayout Spacing="6">
 
                     <Label
-                        Text="No hay estudiantes"
+                        Text="{Binding TituloListaVacia}"
                         HorizontalTextAlignment="Center"
                         FontSize="18"
                         FontAttributes="Bold"
                         TextColor="#343944" />
 
                     <Label
-                        Text="Completa el formulario para registrar el primer estudiante."
+                        Text="{Binding MensajeListaVacia}"
                         HorizontalTextAlignment="Center"
                         FontSize="14"
                         TextColor="#747A86" />
