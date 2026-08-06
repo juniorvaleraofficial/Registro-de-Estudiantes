@@ -486,10 +486,6 @@
 
             </Border>
 
-            <BoxView
-                HeightRequest="30"
-                Color="Transparent" />
-
         </VerticalStackLayout>
 
     </ScrollView>
