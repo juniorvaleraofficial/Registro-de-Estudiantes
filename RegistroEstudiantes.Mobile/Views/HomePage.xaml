@@ -167,6 +167,197 @@
 
             </Border>
 
+            <!-- Panel de estadísticas académicas -->
+
+            <VerticalStackLayout
+                Margin="20,2,20,0"
+                Spacing="3">
+
+                <Label
+                    Text="Resumen académico"
+                    FontSize="23"
+                    FontAttributes="Bold"
+                    TextColor="#171A21" />
+
+                <Label
+                    Text="Indicadores calculados con los datos guardados en SQLite."
+                    FontSize="14"
+                    TextColor="#747A86" />
+
+            </VerticalStackLayout>
+
+            <ActivityIndicator
+                Margin="20,0"
+                IsRunning="{Binding EstaCargando}"
+                IsVisible="{Binding EstaCargando}"
+                Color="#720C16"
+                HorizontalOptions="Center" />
+
+            <Grid
+                Margin="20,0"
+                RowDefinitions="Auto,Auto"
+                ColumnDefinitions="*,*"
+                RowSpacing="12"
+                ColumnSpacing="12">
+
+                <!-- Total de estudiantes -->
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E0E3E7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="ESTUDIANTES"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#720C16" />
+
+                        <Label
+                            Text="{Binding TotalEstudiantes}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#171A21" />
+
+                        <Label
+                            Text="Registros activos"
+                            FontSize="12"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Total de materias -->
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E0E3E7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="MATERIAS"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#720C16" />
+
+                        <Label
+                            Text="{Binding TotalMaterias}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#171A21" />
+
+                        <Label
+                            Text="Asignaturas registradas"
+                            FontSize="12"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Promedio general -->
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Padding="16"
+                    BackgroundColor="#FFF8F1"
+                    Stroke="#F1D2AE"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="PROMEDIO"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#9A4E00" />
+
+                        <Label
+                            Text="{Binding PromedioGeneral}"
+                            FontSize="21"
+                            FontAttributes="Bold"
+                            TextColor="#171A21"
+                            LineBreakMode="WordWrap" />
+
+                        <Label
+                            Text="{Binding DescripcionPromedio}"
+                            FontSize="12"
+                            TextColor="#6F6255"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Porcentaje de asistencia -->
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="16"
+                    BackgroundColor="#F2F8F4"
+                    Stroke="#BFDCC7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="ASISTENCIA"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#287044" />
+
+                        <Label
+                            Text="{Binding PorcentajeAsistencia}"
+                            FontSize="21"
+                            FontAttributes="Bold"
+                            TextColor="#171A21"
+                            LineBreakMode="WordWrap" />
+
+                        <Label
+                            Text="{Binding DescripcionAsistencia}"
+                            FontSize="12"
+                            TextColor="#56675C"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </Grid>
+
             <!-- Título de módulos -->
 
             <VerticalStackLayout
