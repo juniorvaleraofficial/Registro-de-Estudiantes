@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F5F6F8"
+    Shell.NavBarIsVisible="False"
+    Title="Acceso">
+
+    <ScrollView>
+
+        <Grid
+            MinimumHeightRequest="760"
+            RowDefinitions="Auto,*">
+
+            <!-- Encabezado institucional -->
+
+            <Border
+                Grid.Row="0"
+                Padding="28,48,28,84"
+                BackgroundColor="#720C16"
+                StrokeThickness="0">
+
+                <VerticalStackLayout Spacing="9">
+
+                    <Border
+                        Padding="12,7"
+                        BackgroundColor="#8C222C"
+                        Stroke="#A94C54"
+                        StrokeThickness="1"
+                        HorizontalOptions="Start">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+
+                        <Label
+                            Text="GRUPO #6 · UNIDAD 6"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="1.1"
+                            TextColor="#F9E7E9" />
+
+                    </Border>
+
+                    <Label
+                        Margin="0,10,0,0"
+                        Text="Control Académico Estudiantil"
+                        FontSize="31"
+                        FontAttributes="Bold"
+                        LineHeight="1.05"
+                        TextColor="White" />
+
+                    <Label
+                        Text="Gestión móvil de estudiantes, materias, asistencias y calificaciones."
+                        FontSize="15"
+                        LineHeight="1.25"
+                        TextColor="#F4D5D8" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Formulario de acceso -->
+
+            <Border
+                Grid.Row="1"
+                Margin="20,-52,20,28"
+                Padding="24"
+                BackgroundColor="White"
+                Stroke="#E0E3E7"
+                StrokeThickness="1"
+                VerticalOptions="Start">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="22" />
+                </Border.StrokeShape>
+
+                <Border.Shadow>
+                    <Shadow
+                        Brush="#40000000"
+                        Offset="0,8"
+                        Radius="18"
+                        Opacity="0.18" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="16">
+
+                    <VerticalStackLayout Spacing="5">
+
+                        <Label
+                            Text="Iniciar sesión"
+                            FontSize="25"
+                            FontAttributes="Bold"
+                            TextColor="#171A21" />
+
+                        <Label
+                            Text="Ingresa tus credenciales para acceder al sistema académico."
+                            FontSize="14"
+                            LineHeight="1.2"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                    <!-- Usuario -->
+
+                    <VerticalStackLayout
+                        Margin="0,8,0,0"
+                        Spacing="7">
+
+                        <Label
+                            Text="Usuario"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="#343944" />
+
+                        <Border
+                            Padding="14,2"
+                            BackgroundColor="#F7F8FA"
+                            Stroke="#D9DDE3"
+                            StrokeThickness="1">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+
+                            <Entry
+                                Text="{Binding Usuario}"
+                                Placeholder="Escribe tu usuario"
+                                PlaceholderColor="#9CA3AF"
+                                TextColor="#171A21"
+                                BackgroundColor="Transparent"
+                                Keyboard="Text"
+                                HeightRequest="50" />
+
+                        </Border>
+
+                        <Label
+                            Text="{Binding UsuarioError}"
+                            FontSize="13"
+                            TextColor="#B4232D"
+                            IsVisible="{Binding TieneErrorUsuario}" />
+
+                    </VerticalStackLayout>
+
+                    <!-- Contraseña -->
+
+                    <VerticalStackLayout Spacing="7">
+
+                        <Label
+                            Text="Contraseña"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="#343944" />
+
+                        <Border
+                            Padding="14,2"
+                            BackgroundColor="#F7F8FA"
+                            Stroke="#D9DDE3"
+                            StrokeThickness="1">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+
+                            <Entry
+                                Text="{Binding Contrasena}"
+                                Placeholder="Escribe tu contraseña"
+                                PlaceholderColor="#9CA3AF"
+                                TextColor="#171A21"
+                                IsPassword="True"
+                                BackgroundColor="Transparent"
+                                HeightRequest="50" />
+
+                        </Border>
+
+                        <Label
+                            Text="{Binding ContrasenaError}"
+                            FontSize="13"
+                            TextColor="#B4232D"
+                            IsVisible="{Binding TieneErrorContrasena}" />
+
+                    </VerticalStackLayout>
+
+                    <Button
+                        Margin="0,6,0,0"
+                        Text="ENTRAR AL SISTEMA"
+                        Command="{Binding IniciarSesionCommand}"
+                        BackgroundColor="#720C16"
+                        TextColor="White"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        CornerRadius="12"
+                        HeightRequest="54" />
+
+                    <!-- Credenciales de demostración -->
+
+                    <Border
+                        Margin="0,4,0,0"
+                        Padding="15"
+                        BackgroundColor="#F8F1F2"
+                        Stroke="#E7C7CA"
+                        StrokeThickness="1">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="13" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="ACCESO DE DEMOSTRACIÓN"
+                                FontSize="11"
+                                FontAttributes="Bold"
+                                CharacterSpacing="0.8"
+                                TextColor="#720C16" />
+
+                            <Label
+                                Text="Usuario: admin"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                            <Label
+                                Text="Contraseña: 1234"
+                                FontSize="14"
+                                TextColor="#555C68" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                    <BoxView
+                        Margin="0,4"
+                        HeightRequest="1"
+                        Color="#E8EAED" />
+
+                    <VerticalStackLayout Spacing="3">
+
+                        <Label
+                            Text="INF-4316 · Programación de Aplicaciones Móviles"
+                            FontSize="12"
+                            HorizontalTextAlignment="Center"
+                            TextColor="#747A86" />
+
+                        <Label
+                            Text="Proyecto académico · Unidad 6"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            HorizontalTextAlignment="Center"
+                            TextColor="#720C16" />
+
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </Grid>
+
+    </ScrollView>
+
+</ContentPage>

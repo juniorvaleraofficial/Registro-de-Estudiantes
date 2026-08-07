@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.PerfilAcademicoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Perfil acad&#233;mico"
+    BackgroundColor="#F6F7F9">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="16">
+
+            <!-- Indicador de carga -->
+
+            <ActivityIndicator
+                IsRunning="{Binding EstaCargando}"
+                IsVisible="{Binding EstaCargando}"
+                Color="#720C16"
+                HorizontalOptions="Center" />
+
+            <!-- Cabecera del estudiante -->
+
+            <Border
+                Padding="20"
+                BackgroundColor="#720C16"
+                StrokeThickness="0">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="22" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="8">
+
+                    <Label
+                        Text="PERFIL DEL ESTUDIANTE"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CharacterSpacing="1"
+                        TextColor="#F3C8CC" />
+
+                    <Label
+                        Text="{Binding EstudianteActual.NombreCompleto}"
+                        FontSize="28"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        LineBreakMode="WordWrap" />
+
+                    <Border
+                        Padding="12,7"
+                        BackgroundColor="#8D2731"
+                        StrokeThickness="0"
+                        HorizontalOptions="Start">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+
+                        <Label
+                            Text="{Binding EstudianteActual.Matricula}"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                    </Border>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Resumen academico -->
+
+            <VerticalStackLayout Spacing="3">
+
+                <Label
+                    Text="Resumen individual"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="#171A21" />
+
+                <Label
+                    Text="Indicadores calculados con los registros del estudiante."
+                    FontSize="14"
+                    TextColor="#747A86" />
+
+            </VerticalStackLayout>
+
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="12">
+
+                <!-- Promedio -->
+
+                <Border
+                    Grid.Column="0"
+                    Padding="16"
+                    BackgroundColor="#FFF8F1"
+                    Stroke="#F1D2AE"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="7">
+
+                        <Label
+                            Text="PROMEDIO"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#9A4E00" />
+
+                        <Label
+                            Text="{Binding PromedioGeneral}"
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="#171A21"
+                            LineBreakMode="WordWrap" />
+
+                        <Label
+                            Text="{Binding ResumenCalificaciones}"
+                            FontSize="12"
+                            TextColor="#6F6255"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Asistencia -->
+
+                <Border
+                    Grid.Column="1"
+                    Padding="16"
+                    BackgroundColor="#F2F8F4"
+                    Stroke="#BFDCC7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="7">
+
+                        <Label
+                            Text="ASISTENCIA"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#287044" />
+
+                        <Label
+                            Text="{Binding PorcentajeAsistencia}"
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="#171A21"
+                            LineBreakMode="WordWrap" />
+
+                        <Label
+                            Text="{Binding ResumenAsistencias}"
+                            FontSize="12"
+                            TextColor="#56675C"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </Grid>
+
+            <!-- Historial de calificaciones -->
+
+            <VerticalStackLayout Spacing="10">
+
+                <Label
+                    Text="Calificaciones"
+                    FontSize="21"
+                    FontAttributes="Bold"
+                    TextColor="#171A21" />
+
+                <VerticalStackLayout
+                    BindableLayout.ItemsSource="{Binding Calificaciones}"
+                    IsVisible="{Binding TieneCalificaciones}"
+                    Spacing="10">
+
+                    <BindableLayout.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Border
+                                Padding="16"
+                                BackgroundColor="White"
+                                Stroke="#E0E3E7"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="15" />
+                                </Border.StrokeShape>
+
+                                <Grid
+                                    ColumnDefinitions="*,Auto"
+                                    ColumnSpacing="12">
+
+                                    <VerticalStackLayout
+                                        Grid.Column="0"
+                                        VerticalOptions="Center"
+                                        Spacing="3">
+
+                                        <Label
+                                            Text="{Binding Materia}"
+                                            FontSize="16"
+                                            FontAttributes="Bold"
+                                            TextColor="#171A21"
+                                            LineBreakMode="WordWrap" />
+
+                                        <Label
+                                            Text="Calificaci&#243;n registrada"
+                                            FontSize="12"
+                                            TextColor="#747A86" />
+
+                                    </VerticalStackLayout>
+
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="12,8"
+                                        BackgroundColor="#FFF1F2"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center">
+
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+
+                                        <Label
+                                            Text="{Binding Nota}"
+                                            FontSize="19"
+                                            FontAttributes="Bold"
+                                            TextColor="#720C16" />
+
+                                    </Border>
+
+                                </Grid>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </BindableLayout.ItemTemplate>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+            <!-- Historial de asistencias -->
+
+            <VerticalStackLayout Spacing="10">
+
+                <Label
+                    Text="Asistencias"
+                    FontSize="21"
+                    FontAttributes="Bold"
+                    TextColor="#171A21" />
+
+                <VerticalStackLayout
+                    BindableLayout.ItemsSource="{Binding Asistencias}"
+                    IsVisible="{Binding TieneAsistencias}"
+                    Spacing="10">
+
+                    <BindableLayout.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Border
+                                Padding="16"
+                                BackgroundColor="White"
+                                Stroke="#E0E3E7"
+                                StrokeThickness="1">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="15" />
+                                </Border.StrokeShape>
+
+                                <Grid
+                                    RowDefinitions="Auto,Auto"
+                                    ColumnDefinitions="*,Auto"
+                                    RowSpacing="5"
+                                    ColumnSpacing="12">
+
+                                    <Label
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Text="{Binding Materia}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#171A21"
+                                        LineBreakMode="WordWrap" />
+
+                                    <Border
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Padding="10,6"
+                                        BackgroundColor="#F2F8F4"
+                                        StrokeThickness="0">
+
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10" />
+                                        </Border.StrokeShape>
+
+                                        <Label
+                                            Text="{Binding Estado}"
+                                            FontSize="12"
+                                            FontAttributes="Bold"
+                                            TextColor="#287044" />
+
+                                    </Border>
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
+                                        FontSize="12"
+                                        TextColor="#747A86" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </BindableLayout.ItemTemplate>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

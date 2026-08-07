@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="RegistroEstudiantes.Mobile.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F5F6F8"
+    Title="Inicio">
+
+    <ScrollView>
+
+        <VerticalStackLayout Spacing="20">
+
+            <!-- Encabezado principal -->
+
+            <Border
+                BackgroundColor="#720C16"
+                Padding="24,28,24,30"
+                StrokeThickness="0">
+
+                <VerticalStackLayout Spacing="8">
+
+                    <Label
+                        Text="REGISTRO DE ESTUDIANTES"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CharacterSpacing="1.4"
+                        TextColor="#F4D5D8" />
+
+                    <Label
+                        Text="Panel principal"
+                        FontSize="32"
+                        FontAttributes="Bold"
+                        TextColor="White" />
+
+                    <Label
+                        Text="Sistema móvil para gestionar la información académica de los estudiantes."
+                        FontSize="15"
+                        LineHeight="1.2"
+                        TextColor="#F8E7E9" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Información de la unidad -->
+
+            <Border
+                Margin="20,0"
+                Padding="20"
+                BackgroundColor="White"
+                Stroke="#E3E5E8"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <VerticalStackLayout Spacing="3">
+
+                            <Label
+                                Text="Actividad práctica"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                TextColor="#720C16" />
+
+                            <Label
+                                Text="Unidad 6"
+                                FontSize="24"
+                                FontAttributes="Bold"
+                                TextColor="#171A21" />
+
+                        </VerticalStackLayout>
+
+                        <Border
+                            Grid.Column="1"
+                            Padding="11,6"
+                            BackgroundColor="#F1E7E8"
+                            StrokeThickness="0"
+                            VerticalOptions="Center">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20" />
+                            </Border.StrokeShape>
+
+                            <Label
+                                Text="CRUD completo"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#720C16" />
+
+                        </Border>
+
+                    </Grid>
+
+                    <Label
+                        Text="La aplicación permite crear, consultar, editar y eliminar registros utilizando formularios dinámicos, MVVM, validaciones y confirmaciones antes de borrar."
+                        FontSize="15"
+                        LineHeight="1.25"
+                        TextColor="#555C68" />
+
+                    <HorizontalStackLayout
+                        Spacing="8"
+                        Margin="0,4,0,0">
+
+                        <Border
+                            Padding="9,5"
+                            BackgroundColor="#F6F7F9"
+                            Stroke="#E1E4E8"
+                            StrokeThickness="1">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="18" />
+                            </Border.StrokeShape>
+
+                            <Label
+                                Text="Crear"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                        </Border>
+
+                        <Border
+                            Padding="9,5"
+                            BackgroundColor="#F6F7F9"
+                            Stroke="#E1E4E8"
+                            StrokeThickness="1">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="18" />
+                            </Border.StrokeShape>
+
+                            <Label
+                                Text="Editar"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#343944" />
+
+                        </Border>
+
+                        <Border
+                            Padding="9,5"
+                            BackgroundColor="#FFF0F1"
+                            Stroke="#EDB4B9"
+                            StrokeThickness="1">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="18" />
+                            </Border.StrokeShape>
+
+                            <Label
+                                Text="Eliminar"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#B4232D" />
+
+                        </Border>
+
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Panel de estadísticas académicas -->
+
+            <VerticalStackLayout
+                Margin="20,2,20,0"
+                Spacing="3">
+
+                <Label
+                    Text="Resumen académico"
+                    FontSize="23"
+                    FontAttributes="Bold"
+                    TextColor="#171A21" />
+
+                <Label
+                    Text="Indicadores calculados con los datos guardados en SQLite."
+                    FontSize="14"
+                    TextColor="#747A86" />
+
+            </VerticalStackLayout>
+
+            <ActivityIndicator
+                Margin="20,0"
+                IsRunning="{Binding EstaCargando}"
+                IsVisible="{Binding EstaCargando}"
+                Color="#720C16"
+                HorizontalOptions="Center" />
+
+            <Grid
+                Margin="20,0"
+                RowDefinitions="Auto,Auto"
+                ColumnDefinitions="*,*"
+                RowSpacing="12"
+                ColumnSpacing="12">
+
+                <!-- Total de estudiantes -->
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E0E3E7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="ESTUDIANTES"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#720C16" />
+
+                        <Label
+                            Text="{Binding TotalEstudiantes}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#171A21" />
+
+                        <Label
+                            Text="Registros activos"
+                            FontSize="12"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Total de materias -->
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E0E3E7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="MATERIAS"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#720C16" />
+
+                        <Label
+                            Text="{Binding TotalMaterias}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#171A21" />
+
+                        <Label
+                            Text="Asignaturas registradas"
+                            FontSize="12"
+                            TextColor="#747A86" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Promedio general -->
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Padding="16"
+                    BackgroundColor="#FFF8F1"
+                    Stroke="#F1D2AE"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="PROMEDIO"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#9A4E00" />
+
+                        <Label
+                            Text="{Binding PromedioGeneral}"
+                            FontSize="21"
+                            FontAttributes="Bold"
+                            TextColor="#171A21"
+                            LineBreakMode="WordWrap" />
+
+                        <Label
+                            Text="{Binding DescripcionPromedio}"
+                            FontSize="12"
+                            TextColor="#6F6255"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- Porcentaje de asistencia -->
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="16"
+                    BackgroundColor="#F2F8F4"
+                    Stroke="#BFDCC7"
+                    StrokeThickness="1">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="ASISTENCIA"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CharacterSpacing="0.8"
+                            TextColor="#287044" />
+
+                        <Label
+                            Text="{Binding PorcentajeAsistencia}"
+                            FontSize="21"
+                            FontAttributes="Bold"
+                            TextColor="#171A21"
+                            LineBreakMode="WordWrap" />
+
+                        <Label
+                            Text="{Binding DescripcionAsistencia}"
+                            FontSize="12"
+                            TextColor="#56675C"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </Grid>
+
+            <!-- Título de módulos -->
+
+            <VerticalStackLayout
+                Margin="20,2,20,0"
+                Spacing="3">
+
+                <Label
+                    Text="Módulos académicos"
+                    FontSize="23"
+                    FontAttributes="Bold"
+                    TextColor="#171A21" />
+
+                <Label
+                    Text="Selecciona el módulo que deseas administrar."
+                    FontSize="14"
+                    TextColor="#747A86" />
+
+            </VerticalStackLayout>
+
+            <!-- Estudiantes -->
+
+            <Border
+                Margin="20,0"
+                Padding="18"
+                BackgroundColor="White"
+                Stroke="#E0E3E7"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="Estudiantes"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#171A21" />
+
+                    <Label
+                        Text="Administra matrículas, nombres, carreras y teléfonos."
+                        FontSize="14"
+                        TextColor="#747A86" />
+
+                    <Button
+                        Text="Abrir estudiantes"
+                        Clicked="OnEstudiantesClicked"
+                        HeightRequest="50"
+                        BackgroundColor="#720C16"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="12" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Materias -->
+
+            <Border
+                Margin="20,0"
+                Padding="18"
+                BackgroundColor="White"
+                Stroke="#E0E3E7"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="Materias"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#171A21" />
+
+                    <Label
+                        Text="Gestiona códigos, asignaturas, profesores y créditos."
+                        FontSize="14"
+                        TextColor="#747A86" />
+
+                    <Button
+                        Text="Abrir materias"
+                        Clicked="OnMateriasClicked"
+                        HeightRequest="50"
+                        BackgroundColor="#720C16"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="12" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Asistencias -->
+
+            <Border
+                Margin="20,0"
+                Padding="18"
+                BackgroundColor="White"
+                Stroke="#E0E3E7"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="Asistencias"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#171A21" />
+
+                    <Label
+                        Text="Registra fechas y estados de asistencia por materia."
+                        FontSize="14"
+                        TextColor="#747A86" />
+
+                    <Button
+                        Text="Abrir asistencias"
+                        Clicked="OnAsistenciasClicked"
+                        HeightRequest="50"
+                        BackgroundColor="#720C16"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="12" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Calificaciones -->
+
+            <Border
+                Margin="20,0"
+                Padding="18"
+                BackgroundColor="White"
+                Stroke="#E0E3E7"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="Calificaciones"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#171A21" />
+
+                    <Label
+                        Text="Administra notas y observaciones de cada estudiante."
+                        FontSize="14"
+                        TextColor="#747A86" />
+
+                    <Button
+                        Text="Abrir calificaciones"
+                        Clicked="OnCalificacionesClicked"
+                        HeightRequest="50"
+                        BackgroundColor="#720C16"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="12" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <BoxView
+                HeightRequest="24"
+                Color="Transparent" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>
